@@ -1,8 +1,17 @@
+use crate::components::{
+    density_chart::DensityChart, inputs::Inputs, mass_chart::MassChart, misc::Misc,
+    velocity_chart::VelocityChart,
+};
 use leptos::prelude::*;
 
 /// Default Home Page
 #[component]
 pub fn Home() -> impl IntoView {
+    let (mode, set_mode) = signal(String::from("velocity"));
+    // dens_disk, scale_disk, dens_halo, scale_halo
+    let (slider_values, set_slider_values) = signal((1.0, 4.5, 1.52e-21, 15.91));
+    let (iso_nfw, set_iso_nfw) = signal(true);
+
     view! {
         <ErrorBoundary fallback=|errors| {
             view! {
@@ -23,6 +32,23 @@ pub fn Home() -> impl IntoView {
             }
         }>
             <h1>"Galaxien Rotation"</h1>
+            <Show when=move || { mode.get() == "velocity" }>
+                <VelocityChart />
+            </Show>
+            <Show when=move || { mode.get() == "mass" }>
+                <MassChart />
+            </Show>
+            <Show when=move || { mode.get() == "density" }>
+                <DensityChart />
+            </Show>
+            <Inputs
+                set_mode=set_mode
+                slider_values=slider_values
+                set_slider_values=set_slider_values
+                iso_nfw=iso_nfw
+                set_iso_nfw=set_iso_nfw
+            />
+            <Misc />
         </ErrorBoundary>
     }
 }
