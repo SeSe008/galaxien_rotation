@@ -7,3 +7,6 @@
 [submodule "lib/--name=leptos-chartistry"]
 	path = lib/--name=leptos-chartistry
 	url = https://github.com/SeSe008/leptos-chartistry.git
+[submodule "lib/lib/leptos-chartistry"]
+	path = lib/lib/leptos-chartistry
+	url = https://github.com/SeSe008/leptos-chartistry.git
