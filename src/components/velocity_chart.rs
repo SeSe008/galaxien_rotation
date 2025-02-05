@@ -115,8 +115,8 @@ pub fn VelocityChart(
 
     let series = Series::new(|data: &CombinedPoints| data.x)
         .line(Line::new(|data: &CombinedPoints| data.y2)
-            .with_name("Musterwerte (km/s)")
-            .with_interpolation(Step::HorizontalMiddle)
+            .with_name("Musterwerte NGC3198 (km/s)")
+            .with_interpolation(Step::Horizontal)
         )
         .line(Line::new(|data: &CombinedPoints| data.y)
             .with_name("Galaxie (km/s)")

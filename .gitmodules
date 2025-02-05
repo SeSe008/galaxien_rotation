@@ -1,12 +1,3 @@
-[submodule "lib/--name"]
-	path = lib/--name
-	url = https://github.com/SeSe008/leptos-chartistry.git
-[submodule "lib/--leptos-chartistry"]
-	path = lib/--leptos-chartistry
-	url = https://github.com/SeSe008/leptos-chartistry.git
-[submodule "lib/--name=leptos-chartistry"]
-	path = lib/--name=leptos-chartistry
-	url = https://github.com/SeSe008/leptos-chartistry.git
-[submodule "lib/lib/leptos-chartistry"]
-	path = lib/lib/leptos-chartistry
+[submodule "lib/leptos-chartistry"]
+	path = lib/leptos-chartistry
 	url = https://github.com/SeSe008/leptos-chartistry.git
