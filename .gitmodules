@@ -1,0 +1,3 @@
+[submodule "lib/leptos-chartistry"]
+	path = lib/leptos-chartistry
+	url = https://github.com/feral-dot-io/leptos-chartistry.git:/leptos-chartistry
