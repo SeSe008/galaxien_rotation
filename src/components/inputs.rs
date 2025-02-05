@@ -25,9 +25,9 @@ pub fn Inputs(
                     />
                 </div>
                 <div id="mode-labels">
-                    <span>"Velocity"</span>
-                    <span>"Mass"</span>
-                    <span>"Density"</span>
+                    <span>"Geschwindigkeit"</span>
+                    <span>"Masse"</span>
+                    <span>"Dichte"</span>
                 </div>
             </div>
             <div class="input-section">

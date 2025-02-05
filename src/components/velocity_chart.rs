@@ -1,7 +1,6 @@
 use crate::utils::calculate_velocity::calculate_velocity;
 use leptos::prelude::*;
 use leptos_chartistry::*;
-use std::fmt::{format, Debug};
 
 #[derive(PartialEq)]
 struct CombinedPoints {
@@ -59,15 +58,21 @@ fn get_velocity_points(
     iso_nfw: ReadSignal<bool>,
 ) -> Vec<VelocityPoint> {
     let mut velocity_points = Vec::new();
-    for i in 0..45 {
+
+    //Get properties for performance
+    let properties = slider_values.get();
+    let iso_nfw_resolved = iso_nfw.get();
+
+    for i in (0..91).map(|x| x as f64 * 0.5) {
+        log::info!("{}", i);
         let x: f64 = i as f64;
         let y = calculate_velocity(
             x,
-            slider_values.get().0,
-            slider_values.get().1,
-            slider_values.get().2,
-            slider_values.get().3,
-            iso_nfw.get(),
+            properties.0,
+            properties.1,
+            properties.2,
+            properties.3,
+            iso_nfw_resolved,
         );
         velocity_points.push(VelocityPoint::add(x, y));
     }
@@ -87,27 +92,35 @@ pub fn VelocityChart(
         velocity_points
             .iter()
             .enumerate()
-            .map(|(i, velocity)| {
-                if let Some(defined) = defined_points.get(i) {
-                    CombinedPoints {
-                        x: velocity.x,
-                        y: velocity.y,
-                        y2: defined.y,
-                    }
+            .map(|(index, velocity)| {
+                // Check if fits into boundary
+                let velocity_y;
+                if velocity.y > 300.0 {
+                    velocity_y = f64::NAN;
                 } else {
-                    CombinedPoints {
-                        x: velocity.x,
-                        y: velocity.y,
-                        y2: f64::NAN,
-                    }
+                    velocity_y = velocity.y;
+                }
+
+                // Get defined points
+                let defined_y = defined_points.get(index / 2).map_or(f64::NAN, |defined_point| defined_point.y);
+
+                CombinedPoints {
+                    x: velocity.x,
+                    y: velocity_y,
+                    y2: defined_y,
                 }
             })
             .collect::<Vec<CombinedPoints>>()
     });
 
     let series = Series::new(|data: &CombinedPoints| data.x)
-        .line(Line::new(|data: &CombinedPoints| data.y).with_name("Galaxie (km/s)"))
-        .line(Line::new(|data: &CombinedPoints| data.y2).with_name("Musterwerte (km/s)"))
+        .line(Line::new(|data: &CombinedPoints| data.y2)
+            .with_name("Musterwerte (km/s)")
+            .with_interpolation(Step::HorizontalMiddle)
+        )
+        .line(Line::new(|data: &CombinedPoints| data.y)
+            .with_name("Galaxie (km/s)")
+        )
         .with_y_range(0.0, 300.0)
         .with_x_range(0.0, 45.0);
 
@@ -135,7 +148,7 @@ pub fn VelocityChart(
                     XGuideLine::over_data().into_inner(),
                 ]
                 tooltip=Tooltip::right_cursor()
-                    .show_x_ticks(false)
+                    .show_x_ticks(true)
             />
         </div>
     }
