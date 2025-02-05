@@ -522,6 +522,7 @@ dependencies = [
  "leptos_meta",
  "leptos_router",
  "log",
+ "num-complex",
  "scilib",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -899,8 +900,6 @@ dependencies = [
 [[package]]
 name = "leptos-chartistry"
 version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b24fbb2dbedf43cf2d5316e746f124cf56b57f31ebb46cb0e60ab0eade71971"
 dependencies = [
  "chrono",
  "leptos",

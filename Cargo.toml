@@ -14,9 +14,10 @@ console_log = "1"
 log = "0.4"
 console_error_panic_hook = "0.1"
 scilib = "1.0.0"
-leptos-chartistry = "0.2.1"
+leptos-chartistry = { path = "lib/leptos-chartistry/leptos-chartistry" }
 wasm-bindgen = "0.2"
 web-sys = "0.3"
+num-complex = "0.4.6"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }

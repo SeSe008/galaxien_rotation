@@ -9,7 +9,7 @@ use leptos::prelude::*;
 pub fn Home() -> impl IntoView {
     let (mode, set_mode) = signal(String::from("velocity"));
     // dens_disk, scale_disk, dens_halo, scale_halo
-    let (slider_values, set_slider_values) = signal((1.0, 4.5, 1.52e-21, 15.91));
+    let (slider_values, set_slider_values) = signal((1.01, 4.5, 1.52e-21, 15.91));
     let (iso_nfw, set_iso_nfw) = signal(true);
 
     view! {
@@ -33,7 +33,10 @@ pub fn Home() -> impl IntoView {
         }>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
-                <VelocityChart />
+                <VelocityChart 
+                    slider_values={slider_values}
+                    iso_nfw={iso_nfw}
+                />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
                 <MassChart />
