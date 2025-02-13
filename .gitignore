@@ -1,2 +1,6 @@
+# Rust generated
 /target
 /dist
+
+# VS-Code generated
+.vscode
