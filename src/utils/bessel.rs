@@ -1,3 +1,5 @@
+// Modified bessel functions for first and second king, when x = 0 or 1. Polynomial values copied from https://github.com/SheetJS/bessel 
+
 fn horner(arr: &[f64], x: f64) -> f64 {
     let mut res = 0.0;
     for &val in arr.iter() {

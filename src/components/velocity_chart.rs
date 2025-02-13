@@ -1,6 +1,10 @@
-use crate::utils::calculate_velocity::calculate_velocity;
+use std::f64;
+
+use crate::utils::{calculate_velocity::calculate_velocity, intersection::x_intersection};
 use leptos::prelude::*;
 use leptos_chartistry::*;
+
+const CHART_BOUND: f64 = 300.0;
 
 #[derive(PartialEq)]
 struct CombinedPoints {
@@ -9,13 +13,14 @@ struct CombinedPoints {
     y2: f64,
 }
 
+#[derive(Clone, Copy, Debug)]
 struct VelocityPoint {
     x: f64,
     y: f64,
 }
 
 impl VelocityPoint {
-    fn add(x: f64, y: f64) -> Self {
+    fn new(x: f64, y: f64) -> Self {
         Self { x, y }
     }
 }
@@ -64,7 +69,6 @@ fn get_velocity_points(
     let iso_nfw_resolved = iso_nfw.get();
 
     for i in (0..91).map(|x| x as f64 * 0.5) {
-        log::info!("{}", i);
         let x: f64 = i as f64;
         let y = calculate_velocity(
             x,
@@ -74,11 +78,67 @@ fn get_velocity_points(
             properties.3,
             iso_nfw_resolved,
         );
-        velocity_points.push(VelocityPoint::add(x, y));
+        velocity_points.push(VelocityPoint::new(x, y));
     }
 
     velocity_points
 }
+
+fn check_intersection(i: usize, velocity_points: &[VelocityPoint], defined_points: &[VelocityPoint], velocity: &VelocityPoint, combined: &mut Vec<CombinedPoints>) {
+    // If != first point and y > CHART_BOUND + previous point < CHART_BOUND
+    if i > 0 && velocity.y > CHART_BOUND {
+        let prev = velocity_points[i - 1];
+
+        if prev.y < CHART_BOUND {
+            let intersect_x = x_intersection(prev.x, prev.y, velocity.x, velocity.y, CHART_BOUND);
+            let defined_y = defined_points
+                .get((i - 1) / 2)
+                .map_or(f64::NAN, |dp| dp.y);
+
+            log::info!("{}", defined_y);
+
+            let intersection_point = CombinedPoints {
+                x: intersect_x,
+                y: CHART_BOUND,
+                y2: defined_y,
+            };
+            combined.push(intersection_point);
+        }
+    }
+}
+
+fn combine_points(
+    velocity_points: &[VelocityPoint],
+    defined_points: &[VelocityPoint],
+) -> Vec<CombinedPoints> {
+    let mut combined: Vec<CombinedPoints> = Vec::new();
+
+    for (i, velocity) in velocity_points.iter().enumerate() {
+
+        check_intersection(i, velocity_points, defined_points, velocity, &mut combined);
+
+        // If the current y is above the CHART_BOUND, use NaN.
+        let velocity_y = if velocity.y > CHART_BOUND {
+            f64::NAN
+        } else {
+            velocity.y
+        };
+
+        let defined_y = defined_points
+            .get(i / 2)
+            .map_or(f64::NAN, |dp| dp.y);
+
+        let current_point = CombinedPoints {
+            x: velocity.x,
+            y: velocity_y,
+            y2: defined_y,
+        };
+        combined.push(current_point);
+    }
+
+    combined
+}
+
 
 #[component]
 pub fn VelocityChart(
@@ -89,28 +149,7 @@ pub fn VelocityChart(
         let defined_points = get_defined_points();
         let velocity_points = get_velocity_points(slider_values, iso_nfw);
 
-        velocity_points
-            .iter()
-            .enumerate()
-            .map(|(index, velocity)| {
-                // Check if fits into boundary
-                let velocity_y;
-                if velocity.y > 300.0 {
-                    velocity_y = f64::NAN;
-                } else {
-                    velocity_y = velocity.y;
-                }
-
-                // Get defined points
-                let defined_y = defined_points.get(index / 2).map_or(f64::NAN, |defined_point| defined_point.y);
-
-                CombinedPoints {
-                    x: velocity.x,
-                    y: velocity_y,
-                    y2: defined_y,
-                }
-            })
-            .collect::<Vec<CombinedPoints>>()
+        combine_points(&velocity_points, &defined_points)
     });
 
     let series = Series::new(|data: &CombinedPoints| data.x)
@@ -120,8 +159,9 @@ pub fn VelocityChart(
         )
         .line(Line::new(|data: &CombinedPoints| data.y)
             .with_name("Galaxie (km/s)")
+            .with_width(3.0)
         )
-        .with_y_range(0.0, 300.0)
+        .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
 
     view! {

@@ -1,6 +1,6 @@
 [package]
 name = "galaxien_rotation"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["SeSe008 <sebastian.radenbach@hg-gym.de>"]
 
@@ -35,3 +35,8 @@ opt-level = 'z'
 lto = true
 codegen-units = 1
 panic = "abort"
+
+[profile.dev]
+opt-level = 1
+[profile.dev.package."*"]
+opt-level = 3 

@@ -51,6 +51,18 @@ h1 {
       background-color: $bg-color !important;
       border-radius: 1rem;
     }
+
+    & ._chartistry_series {
+      animation: pathInAniation 2s forwards;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+  }
+
+  @keyframes pathInAniation {
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
   #inputs {
@@ -182,6 +194,22 @@ h1 {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    > span {
+      flex: 1;
+    
+      &:nth-child(1) {
+        text-align: left;
+      }
+  
+      &:nth-child(2) {
+        text-align: center;
+      }
+  
+      &:nth-child(3) {
+        text-align: right;
+      }
+    }
   }
 
   .input-switch {

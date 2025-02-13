@@ -39,7 +39,10 @@ pub fn Home() -> impl IntoView {
                 />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
-                <MassChart />
+                <MassChart
+                slider_values={slider_values}
+                iso_nfw={iso_nfw}
+            />
             </Show>
             <Show when=move || { mode.get() == "density" }>
                 <DensityChart />
