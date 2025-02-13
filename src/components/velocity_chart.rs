@@ -139,7 +139,6 @@ fn combine_points(
     combined
 }
 
-
 #[component]
 pub fn VelocityChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
@@ -164,6 +163,19 @@ pub fn VelocityChart(
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
 
+        let tooltip = Tooltip::new(
+            TooltipPlacement::RightCursor,
+            TickLabels::aligned_floats(),
+            TickLabels::aligned_floats().with_format(|value, _| {
+                if value.position().is_nan() {
+                    "-".to_string()
+                } else {
+                    format!("{:.2}", value.position())
+                }
+            }),
+        )
+        .show_x_ticks(true);
+
     view! {
         <div class="chart">
             <Chart
@@ -187,8 +199,7 @@ pub fn VelocityChart(
                     YGuideLine::over_mouse().into_inner(),
                     XGuideLine::over_data().into_inner(),
                 ]
-                tooltip=Tooltip::right_cursor()
-                    .show_x_ticks(true)
+                tooltip=tooltip
             />
         </div>
     }
