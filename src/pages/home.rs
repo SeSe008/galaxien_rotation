@@ -45,7 +45,10 @@ pub fn Home() -> impl IntoView {
             />
             </Show>
             <Show when=move || { mode.get() == "density" }>
-                <DensityChart />
+                <DensityChart 
+                    slider_values={slider_values}
+                    iso_nfw={iso_nfw}
+                />
             </Show>
             <Inputs
                 set_mode=set_mode

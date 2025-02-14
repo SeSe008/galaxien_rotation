@@ -1,5 +1,3 @@
-#![feature(let_chains)]
-
 use leptos::prelude::*;
 use leptos_meta::*;
 use leptos_router::{components::*, path};

@@ -73,21 +73,13 @@ fn check_intersection(i: usize, mass_points: &mut Vec<MassPoint>, mass_point: &M
                     .get(i - 1)
                     .map_or(f64::NAN, |mp| mp.y2);
 
-                intersection_point = MassPoint {
-                    x: intersect_x,
-                    y1: CHART_BOUND,
-                    y2: y2,
-                };
+                intersection_point = MassPoint::new(intersect_x, CHART_BOUND, y2)
             } else {
                 let y1 = mass_points
                     .get(i - 1)
                     .map_or(f64::NAN, |mp| mp.y1);
 
-                intersection_point = MassPoint {
-                    x: intersect_x,
-                    y1: y1,
-                    y2: CHART_BOUND,
-                };                
+                intersection_point = MassPoint::new(intersect_x, y1, CHART_BOUND);
             }
 
             mass_points.push(intersection_point);
@@ -123,15 +115,27 @@ pub fn MassChart(
 
     let series = Series::new(|data: &MassPoint| data.x)
         .line(Line::new(|data: &MassPoint| data.y1)
-            .with_name("Scheibe (10^10 * M_☉)")
+            .with_name("Scheibe")
             .with_width(3.0)
         )
         .line(Line::new(|data: &MassPoint| data.y2)
-            .with_name("Halo (10^10 * M_☉)")
+            .with_name("Halo")
             .with_width(3.0)
         )
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
+
+    let tooltip = Tooltip::new(
+        TooltipPlacement::RightCursor,
+        TickLabels::aligned_floats(),
+        TickLabels::aligned_floats().with_format(|value, _| {
+            if value.position().is_nan() {
+                "-".to_string()
+            } else {
+                format!("{:.2}", value.position())
+            }
+        }),
+    ).show_x_ticks(true);
 
     view! {
         <div class="chart">
@@ -140,7 +144,7 @@ pub fn MassChart(
                 series=series
                 data=mass_points
                 left=vec![
-                    RotatedLabel::end("Geschwindikeit (km/s)").into(),
+                    RotatedLabel::end("Masse (10^10 * M_☉)").into(),
                     TickLabels::aligned_floats().into(),
                 ]
                 bottom=vec![
@@ -156,8 +160,7 @@ pub fn MassChart(
                     YGuideLine::over_mouse().into_inner(),
                     XGuideLine::over_data().into_inner(),
                 ]
-                tooltip=Tooltip::right_cursor()
-                    .show_x_ticks(true)
+                tooltip=tooltip
             />
         </div>
     }
