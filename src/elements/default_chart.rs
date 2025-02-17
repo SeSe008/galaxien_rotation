@@ -11,7 +11,7 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
 {
     let tooltip = Tooltip::new(
         TooltipPlacement::RightCursor,
-        TickLabels::aligned_floats(),
+        TickLabels::aligned_floats().with_format(|value, _| format!("{:.1}", value)),
         TickLabels::aligned_floats().with_format(|value, _| {
             if value.position().is_nan() {
                 "-".to_string()

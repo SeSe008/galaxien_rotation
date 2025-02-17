@@ -3,6 +3,8 @@ use crate::components::{
     velocity_chart::VelocityChart,
 };
 use leptos::prelude::*;
+use icondata as i;
+use leptos_icons::Icon;
 
 /// Default Home Page
 #[component]
@@ -31,6 +33,11 @@ pub fn Home() -> impl IntoView {
                 </ul>
             }
         }>
+            <div id="icons">
+                <a href="https://github.com/SeSe008/galaxien_rotation"><Icon icon={i::IoLogoGithub} style="color: white"/></a>
+                <a href="mailto:s.radenba@gmail.com"><Icon icon={i::MdiEmail} style="color: white"/></a>
+                <a href="https://discord.com/users/813744649440722956"><Icon icon={i::BiDiscordAlt} style="color: white"/></a>
+            </div>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
                 <VelocityChart 

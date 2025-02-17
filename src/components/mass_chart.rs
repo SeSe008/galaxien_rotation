@@ -27,6 +27,14 @@ impl MassPoint {
     }
 }
 
+fn halo_factor() -> f64 {
+    1.5 * 10.0_f64.powi(18)
+}
+
+fn disk_factor() -> f64 {
+    10.0_f64.powi(-1)
+}
+
 fn get_mass_points(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>
@@ -38,8 +46,8 @@ fn get_mass_points(
 
     for i in (0..182).map(|x| x as f64 * 0.25) {
         let x: f64 = i as f64;
-        let y1: f64 = mass_disk(x, properties.0, properties.1);
-        let y2: f64 = mass_halo(x, properties.2, properties.3, iso_nfw_resolved);
+        let y1: f64 = mass_disk(x, properties.0, properties.1) * disk_factor();
+        let y2: f64 = mass_halo(x, properties.2, properties.3, iso_nfw_resolved) * halo_factor();
 
         mass_points.push(MassPoint::new(x, y1, y2));
     }

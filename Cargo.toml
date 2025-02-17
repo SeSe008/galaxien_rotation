@@ -2,7 +2,7 @@
 name = "galaxien_rotation"
 version = "0.2.0"
 edition = "2021"
-authors = ["SeSe008 <sebastian.radenbach@hg-gym.de>"]
+authors = ["SeSe008 <s.radenba@gmail.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -18,6 +18,8 @@ leptos-chartistry = { path = "lib/leptos-chartistry/leptos-chartistry" }
 wasm-bindgen = "0.2"
 web-sys = "0.3"
 num-complex = "0.4.6"
+leptos_icons = "0.5.0"
+icondata = "0.5.0"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }
@@ -39,4 +41,4 @@ panic = "abort"
 [profile.dev]
 opt-level = 1
 [profile.dev.package."*"]
-opt-level = 3 
+opt-level = 3
