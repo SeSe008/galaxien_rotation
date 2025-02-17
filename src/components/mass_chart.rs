@@ -1,6 +1,12 @@
 use leptos::prelude::*;
 use leptos_chartistry::*;
-use crate::utils::{calculate_mass::{mass_disk, mass_halo}, intersection::x_intersection};
+use crate::{
+    utils::{
+        calculate_mass::*,
+        intersection::x_intersection
+    },
+    elements::default_chart::DefaultChart
+};
 
 const CHART_BOUND: f64 = 30.0;
 
@@ -125,43 +131,12 @@ pub fn MassChart(
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
 
-    let tooltip = Tooltip::new(
-        TooltipPlacement::RightCursor,
-        TickLabels::aligned_floats(),
-        TickLabels::aligned_floats().with_format(|value, _| {
-            if value.position().is_nan() {
-                "-".to_string()
-            } else {
-                format!("{:.2}", value.position())
-            }
-        }),
-    ).show_x_ticks(true);
-
     view! {
-        <div class="chart">
-            <Chart
-                aspect_ratio=AspectRatio::from_env()
-                series=series
-                data=mass_points
-                left=vec![
-                    RotatedLabel::end("Masse (10^10 * M_☉)").into(),
-                    TickLabels::aligned_floats().into(),
-                ]
-                bottom=vec![
-                    TickLabels::aligned_floats().into(),
-                    RotatedLabel::end("Radius (kpc)").into(),
-                    Legend::middle().into(),
-                ]
-                inner=[
-                    AxisMarker::left_edge().into_inner(),
-                    AxisMarker::bottom_edge().into_inner(),
-                    XGridLine::default().into_inner(),
-                    YGridLine::default().into_inner(),
-                    YGuideLine::over_mouse().into_inner(),
-                    XGuideLine::over_data().into_inner(),
-                ]
-                tooltip=tooltip
-            />
-        </div>
+        <DefaultChart
+            y_label="Masse (10^10 * M_☉)".to_string()
+            x_label="Radius (kpc)".to_string()
+            series={series}
+            data=mass_points
+        />
     }
 }

@@ -26,7 +26,7 @@ h1 {
 
 @media screen and (orientation: landscape) {
   body {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 40% 60%;
     grid-template-rows: min-content auto 1fr;
     gap: 1rem;
   }

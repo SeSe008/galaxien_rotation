@@ -1,6 +1,12 @@
 use std::f64;
 
-use crate::utils::{calculate_velocity::calculate_velocity, intersection::x_intersection};
+use crate::{
+    utils::{
+        calculate_velocity::calculate_velocity,
+        intersection::x_intersection
+    },
+    elements::default_chart::DefaultChart
+};
 use leptos::prelude::*;
 use leptos_chartistry::*;
 
@@ -163,43 +169,12 @@ pub fn VelocityChart(
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
 
-        let tooltip = Tooltip::new(
-            TooltipPlacement::RightCursor,
-            TickLabels::aligned_floats(),
-            TickLabels::aligned_floats().with_format(|value, _| {
-                if value.position().is_nan() {
-                    "-".to_string()
-                } else {
-                    format!("{:.2}", value.position())
-                }
-            }),
-        ).show_x_ticks(true);
-
     view! {
-        <div class="chart">
-            <Chart
-                aspect_ratio=AspectRatio::from_env()
-                series=series
-                data=combined_points
-                left=vec![
-                    RotatedLabel::end("Geschwindikeit (km/s)").into(),
-                    TickLabels::aligned_floats().into(),
-                ]
-                bottom=vec![
-                    TickLabels::aligned_floats().into(),
-                    RotatedLabel::end("Radius (kpc)").into(),
-                    Legend::middle().into(),
-                ]
-                inner=[
-                    AxisMarker::left_edge().into_inner(),
-                    AxisMarker::bottom_edge().into_inner(),
-                    XGridLine::default().into_inner(),
-                    YGridLine::default().into_inner(),
-                    YGuideLine::over_mouse().into_inner(),
-                    XGuideLine::over_data().into_inner(),
-                ]
-                tooltip=tooltip
-            />
-        </div>
+        <DefaultChart
+            y_label="Geschwindikeit (km/s)".to_string()
+            x_label="Radius (kpc)".to_string()
+            series={series}
+            data=combined_points
+        />
     }
 }

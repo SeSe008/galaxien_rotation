@@ -1,6 +1,12 @@
 use leptos::prelude::*;
 use leptos_chartistry::*;
-use crate::utils::{caclulate_density::*, intersection::x_intersection};
+use crate::{
+    utils::{
+        caclulate_density::*,
+        intersection::x_intersection
+    },
+    elements::default_chart::DefaultChart
+};
 
 const CHART_BOUND: f64 = 4.0;
 
@@ -120,7 +126,7 @@ pub fn DensityChart(
         density_points
     });
 
-    let series = Series::new(|data: &DensityPoint| data.x)
+    let series: Series<DensityPoint, f64, f64> = Series::new(|data: &DensityPoint| data.x)
         .line(Line::new(|data: &DensityPoint| data.y1)
             .with_name("Scheibe")
             .with_width(3.0)
@@ -132,44 +138,13 @@ pub fn DensityChart(
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
 
-    let tooltip = Tooltip::new(
-        TooltipPlacement::RightCursor,
-        TickLabels::aligned_floats(),
-        TickLabels::aligned_floats().with_format(|value, _| {
-            if value.position().is_nan() {
-                "-".to_string()
-            } else {
-                format!("{:.2}", value.position())
-            }
-        }),
-    ).show_x_ticks(true);
-
     view! {
-        <div class="chart">
-            <Chart
-                aspect_ratio=AspectRatio::from_env()
-                series=series
-                data=density_points
-                left=vec![
-                    RotatedLabel::end("Dichte (* 10^-21)").into(),
-                    TickLabels::aligned_floats().into(),
-                ]
-                bottom=vec![
-                    TickLabels::aligned_floats().into(),
-                    RotatedLabel::end("Radius (kpc)").into(),
-                    Legend::middle().into(),
-                ]
-                inner=[
-                    AxisMarker::left_edge().into_inner(),
-                    AxisMarker::bottom_edge().into_inner(),
-                    XGridLine::default().into_inner(),
-                    YGridLine::default().into_inner(),
-                    YGuideLine::over_mouse().into_inner(),
-                    XGuideLine::over_data().into_inner(),
-                ]
-                tooltip=tooltip
-            />
-        </div>
+        <DefaultChart
+            y_label="Dichte (* 10^-21)".to_string()
+            x_label="Radius (kpc)".to_string()
+            series={series}
+            data=density_points
+        />
     }
 
 }
