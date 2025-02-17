@@ -101,8 +101,6 @@ fn check_intersection(i: usize, velocity_points: &[VelocityPoint], defined_point
                 .get((i - 1) / 2)
                 .map_or(f64::NAN, |dp| dp.y);
 
-            log::info!("{}", defined_y);
-
             let intersection_point = CombinedPoints {
                 x: intersect_x,
                 y: CHART_BOUND,
