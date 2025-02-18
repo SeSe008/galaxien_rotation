@@ -278,4 +278,14 @@ h1 {
     background-color: rgb(255, 0, 255);
     left: 25%;
   }
+
+  #equations {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    justify-content: center;
+    background-color: $hightlight-color;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
 }

@@ -7,27 +7,30 @@ use web_sys::Element;
 
 #[wasm_bindgen(module = "/public/js/katex.js")]
 extern "C" {
-    fn render_katex(formula: &str, element: &Element);
+    fn render_katex(equation: &str, element: &Element);
 }
 
 #[component]
-pub fn TexFormula(formula: String) -> impl IntoView {
+pub fn TexEquation(label: String, equation: String) -> impl IntoView {
     let node_ref = NodeRef::<Div>::new();
 
 
     Effect::new(move || {
         if let Some(div) = node_ref.get() {
-            let formula_to_render = formula.clone();
+            let equation_to_render = equation.clone();
             spawn_local(async move {
-                render_katex(&formula_to_render, &div);
+                render_katex(&equation_to_render, &div);
             });
         }
     });
 
     view! {
+        <div class="equation_label">
+            { label }
+        </div>
         <div 
+            class="equation_content"
             node_ref=node_ref
-            class="tex-formula"
         />
     }
 }

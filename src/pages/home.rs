@@ -64,7 +64,10 @@ pub fn Home() -> impl IntoView {
                 iso_nfw=iso_nfw
                 set_iso_nfw=set_iso_nfw
             />
-            <Misc />
+            <Misc
+                mode=mode
+                iso_nfw=iso_nfw
+            />
         </ErrorBoundary>
     }
 }

@@ -1,2 +1,2 @@
 pub mod default_chart;
-pub mod tex_formula;
+pub mod tex_equation;
