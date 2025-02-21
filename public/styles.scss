@@ -46,11 +46,7 @@ h1 {
     grid-row: 1;
   }
 
-  .chart {
-    grid-column: 1;
-    grid-row: 2 / 4;
-    background-color: $bg-color;
-    
+  .chart {    
     & > * {
       fill: white;
       color: white;
@@ -74,6 +70,12 @@ h1 {
     to {
       stroke-dashoffset: 0;
     }
+  }
+
+  .chart_primary {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    background-color: $bg-color;
   }
 
   #inputs {
@@ -279,13 +281,78 @@ h1 {
     left: 25%;
   }
 
+  .tab_container {
+    background-color: $hightlight-color;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tab_selector {
+    display: flex;
+    justify-content: flex-start;
+    height: min-content;
+    margin-top: .5rem;
+    padding: 0 1rem;
+    gap: .5rem;
+    border-bottom: 1px solid white;
+
+    & > button {
+      background-color: transparent;
+      color: white;
+      font-size: 1rem;
+      border: 1px solid white;
+      border-radius: .25rem .25rem 0 0;
+      cursor: pointer;
+      transition: transform .25s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .tab_elements {
+    height: 100%;
+    padding: 1rem;
+  }
+
   #equations {
     display: flex;
     flex-direction: column;
     gap: .5rem;
     justify-content: center;
-    background-color: $hightlight-color;
-    border-radius: 1rem;
     padding: 1rem;
+  }
+
+  #mass_bar_chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    & > .chart {
+      height: 100%;
+
+      & ._chartistry_tooltip {
+        display: none;
+      }
+
+      & ._chartistry_tick_label {
+        display: none;
+      }
+    }
+  }
+
+  #mass_bar_chart_values {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    
+    & > span {
+      border: 1px solid white;
+      border-radius: 1rem;
+      padding: 1rem;
+    }
   }
 }

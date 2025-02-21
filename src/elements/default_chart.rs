@@ -7,12 +7,13 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
     x_label: String,
     series: Series<T, f64, f64>,
     data: Memo<Vec<T>>,
+    primary: bool
 ) -> impl IntoView
 {
     let tooltip = Tooltip::new(
         TooltipPlacement::RightCursor,
         TickLabels::aligned_floats().with_format(|value, _| format!("{:.1}", value)),
-        TickLabels::aligned_floats().with_format(|value, _| {
+        TickLabels::aligned_floats().with_format(move |value, _| {
             if value.position().is_nan() {
                 "-".to_string()
             } else {
@@ -22,8 +23,9 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
     )
     .show_x_ticks(true);
 
+
     view! {
-        <div class="chart">
+        <div class=format!("chart {}", {if primary{"chart_primary"} else {""}})>
             <Chart
                 aspect_ratio=AspectRatio::from_env()
                 series=series

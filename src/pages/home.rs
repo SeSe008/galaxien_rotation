@@ -67,6 +67,7 @@ pub fn Home() -> impl IntoView {
             <Misc
                 mode=mode
                 iso_nfw=iso_nfw
+                slider_values=slider_values
             />
         </ErrorBoundary>
     }

@@ -141,10 +141,11 @@ pub fn MassChart(
 
     view! {
         <DefaultChart
-            y_label="Masse (10^10 * M_☉)".to_string()
+            y_label="Masse (10^10 * M☉)".to_string()
             x_label="Radius (kpc)".to_string()
             series={series}
             data=mass_points
+            primary=true
         />
     }
 }

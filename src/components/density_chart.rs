@@ -2,7 +2,7 @@ use leptos::prelude::*;
 use leptos_chartistry::*;
 use crate::{
     utils::{
-        caclulate_density::*,
+        calculate_density::*,
         intersection::x_intersection
     },
     elements::default_chart::DefaultChart
@@ -102,7 +102,7 @@ fn check_intersection(i: usize, density_points: &mut Vec<DensityPoint>, density_
 #[component]
 pub fn DensityChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
-    iso_nfw: ReadSignal<bool>  
+    iso_nfw: ReadSignal<bool>
 ) -> impl IntoView {
     let density_points = Memo::new(move |_| {
         let density_points_no_bound = get_density_points(slider_values, iso_nfw);
@@ -144,6 +144,7 @@ pub fn DensityChart(
             x_label="Radius (kpc)".to_string()
             series={series}
             data=density_points
+            primary=true
         />
     }
 

@@ -173,6 +173,7 @@ pub fn VelocityChart(
             x_label="Radius (kpc)".to_string()
             series={series}
             data=combined_points
+            primary=true
         />
     }
 }
