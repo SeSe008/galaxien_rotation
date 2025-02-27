@@ -27,7 +27,7 @@ fn disk_factor() -> f64 {
 
 #[component]
 fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSignal<bool>) -> impl IntoView {
-    const CHART_BOUND: f64 = 200.0;
+    const CHART_BOUND: f64 = 100.0;
 
     let mass_point: Memo<Vec<MassPoint>> = Memo::new(move |_| {
         vec![
@@ -52,8 +52,7 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
         .bar(Bar::new(|data: &MassPoint| data.y2)
             .with_name("Halo")
         )
-        .with_y_range(0.0, CHART_BOUND)
-        .with_x_range(0.0, 200.0);
+        .with_y_range(0.0, CHART_BOUND);
 
     view!{
         <div id="mass_bar_chart">
@@ -65,8 +64,8 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
                 primary=false
             />
             <div id="mass_bar_chart_values">
-                <span>{ move || format!("Scheibe: {:.2} M☉ * 10^10", mass_disk(30.0, slider_values.get().0, slider_values.get().1) * disk_factor()) }</span>
-                <span>{ move || format!("Halo: {:.2} M☉ * 10^10", mass_halo(30.0, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor()) }</span>
+                <span>{ move || format!("Scheibe: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y1, mass_point.get()[0].y1 / (mass_point.get()[0].y1 + mass_point.get()[0].y2) * 100.0) }</span>
+                <span>{ move || format!("Halo: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y2, mass_point.get()[0].y2 * 100.0 / (mass_point.get()[0].y1 + mass_point.get()[0].y2)) }</span>
             </div>
         </div>
     }
