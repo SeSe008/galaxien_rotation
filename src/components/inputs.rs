@@ -1,6 +1,69 @@
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::HtmlInputElement;
+use web_sys::{Event, HtmlInputElement, WheelEvent};
+
+#[derive(Clone)]
+struct SliderConfig {
+    min_value: f64,
+    max_value: f64,
+    step: f64,
+    factor: f64,
+}
+
+fn wheel_handle(
+    slider_i: usize,
+    config: SliderConfig,
+    slider_values: ReadSignal<(f64, f64, f64, f64)>,
+    set_slider_values: WriteSignal<(f64, f64, f64, f64)>
+) -> impl Fn(WheelEvent) + Clone + 'static {
+    move |wheel_ev: WheelEvent| {
+        // Stop default behaviour
+        wheel_ev.prevent_default();
+        wheel_ev.stop_propagation();
+
+        // Get input
+        let input = wheel_ev
+            .target()
+            .unwrap()
+            .dyn_into::<HtmlInputElement>()
+            .unwrap();
+        
+        // Get value
+        let mut value = input.value().parse::<f64>().unwrap_or(config.min_value);
+
+        // Find direction
+        if wheel_ev.delta_y() < 0.0 {
+            value += config.step;
+        } else {
+            value -= config.step;
+        }
+
+        // Clamp
+        if value < config.min_value {
+            value = config.min_value;
+        } else if value > config.max_value {
+            value = config.max_value;
+        }
+
+        // Update DOM
+        input.set_value(&value.to_string());
+
+        // Get old slider values
+        let old_slider_values = slider_values.get_untracked();
+
+        // Get and change value
+        let new_value = value * config.factor;
+        let new_slider_values = match slider_i {
+            0 => (new_value, old_slider_values.1, old_slider_values.2, old_slider_values.3),
+            1 => (old_slider_values.0, new_value, old_slider_values.2, old_slider_values.3),
+            2 => (old_slider_values.0, old_slider_values.1, new_value, old_slider_values.3),
+            3 => (old_slider_values.0, old_slider_values.1, old_slider_values.2, new_value),
+            _ => old_slider_values
+        };
+
+        set_slider_values(new_slider_values);
+    }
+}
 
 #[component]
 pub fn Inputs(
@@ -10,6 +73,68 @@ pub fn Inputs(
     iso_nfw: ReadSignal<bool>,
     set_iso_nfw: WriteSignal<bool>,
 ) -> impl IntoView {
+    let slider_configs = vec![
+        // Disk density
+        SliderConfig { 
+            min_value: 1.0, 
+            max_value: 200.0, 
+            step: 1.0,
+            factor: 1.0/100.0,
+        },
+        // Disk scalelength
+        SliderConfig { 
+            min_value: 20.0, 
+            max_value: 880.0, 
+            step: 1.0,
+            factor: 1.0/100.0,
+        },
+        // Halo density
+        SliderConfig {
+            min_value: 1.0,
+            max_value: 303.0,
+            step: 1.0,
+            factor: 10.0e-24,
+        },
+        // Halo scalelength
+        SliderConfig {
+            min_value: 1.0,
+            max_value: 3180.0,
+            step: 1.0,
+            factor: 1.0/100.0,
+        },
+    ];
+
+    // Create handlers for scroll and normal input
+
+    let wheel_handlers: Vec<_> = (0..4)
+        .map(|i| {
+            let cfg = slider_configs[i].clone();
+            wheel_handle(i, cfg, slider_values, set_slider_values)
+        })
+        .collect();
+
+    let input_handlers: Vec<_> = (0..4)
+        .map(|i| {
+            let cfg = slider_configs[i].clone();
+            let slider_values = slider_values.clone();
+            let set_slider_values = set_slider_values.clone();
+            move |ev: Event| {
+                let input = ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap();
+                let raw_value = input.value().parse::<f64>().unwrap_or(cfg.min_value);
+                let old_values = slider_values.get();
+                let new_value = raw_value * cfg.factor;
+                let new_values = match i {
+                    0 => (new_value, old_values.1, old_values.2, old_values.3),
+                    1 => (old_values.0, new_value, old_values.2, old_values.3),
+                    2 => (old_values.0, old_values.1, new_value, old_values.3),
+                    3 => (old_values.0, old_values.1, old_values.2, new_value),
+                    _ => old_values,
+                };
+                set_slider_values(new_values);
+            }
+        })
+        .collect();
+
     view! {
         <div id="inputs">
             <div class="input-vertical">
@@ -38,10 +163,12 @@ pub fn Inputs(
                             type="range"
                             min="1"
                             max="200"
-                            value={(slider_values.get_untracked().0 * 100.0).to_string()}
-                            on:input= move |ev| {
-                                set_slider_values(((ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<f64>().unwrap()) / 100.0, slider_values.get().1, slider_values.get().2, slider_values.get().3));
+                            value={
+                                let (v0, _, _, _) = slider_values.get_untracked();
+                                (v0 / slider_configs[0].factor).to_string()
                             }
+                            on:input=input_handlers[0].clone()
+                            on:wheel=wheel_handlers[0].clone()
                         /></div>
                         <span>{move || format!("{:.2}",slider_values.get().0)} " kg/m²"</span>
                     </div>
@@ -53,10 +180,12 @@ pub fn Inputs(
                             type="range"
                             min="20"
                             max="880"
-                            value={(slider_values.get_untracked().1 * 100.0).to_string()}
-                            on:input= move |ev| {
-                                set_slider_values((slider_values.get().0, (ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<f64>().unwrap()) / 100.0, slider_values.get().2, slider_values.get().3));
+                            value={
+                                let (_, v1, _, _) = slider_values.get_untracked();
+                                (v1 / slider_configs[1].factor).to_string()
                             }
+                            on:input=input_handlers[1].clone()
+                            on:wheel=wheel_handlers[1].clone()
                         /></div>
                         <span>{move || format!("{:.2}",slider_values.get().1)} " kpc"</span>
                     </div>
@@ -70,10 +199,13 @@ pub fn Inputs(
                             type="range"
                             min="1"
                             max="303"
-                            value={(slider_values.get_untracked().2 * 10.0e22).to_string()}
-                            on:input= move |ev| {
-                                set_slider_values((slider_values.get().0, slider_values.get().1, (ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<f64>().unwrap()) * 10.0e-24, slider_values.get().3));
+                            value={
+                                let (_, _, v2, _) = slider_values.get_untracked();
+                                (v2 / slider_configs[2].factor).to_string()
                             }
+                            on:input=input_handlers[2].clone()
+                            on:wheel=wheel_handlers[2].clone()
+
                         /></div>
                         <span>{move || format!("{:.2e}", slider_values.get().2)} " kpc"</span>
                     </div>
@@ -85,10 +217,13 @@ pub fn Inputs(
                             type="range"
                             min="1"
                             max="3180"
-                            value={(slider_values.get_untracked().3 * 100.0).to_string()}
-                            on:input= move |ev| {
-                                set_slider_values((slider_values.get().0, slider_values.get().1, slider_values.get().2, (ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<f64>().unwrap()) / 100.0));
+                            value={
+                                let (_, _, _, v3) = slider_values.get_untracked();
+                                (v3 / slider_configs[3].factor).to_string()
                             }
+                            on:input=input_handlers[3].clone()
+                            on:wheel=wheel_handlers[3].clone()
+
                         /></div>
                         <span>{move || format!("{:.2}", slider_values.get().3)} " kg/m³"</span>
                     </div>
