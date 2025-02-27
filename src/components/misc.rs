@@ -13,8 +13,9 @@ use crate::{
 #[derive(PartialEq, Clone)]
 struct MassPoint{
     x: f64,
-    y1: f64,
-    y2: f64
+    y_disk: f64,
+    y_halo_no_clamp: f64,
+    y_halo: f64
 }
 
 fn halo_factor() -> f64 {
@@ -33,11 +34,14 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
         vec![
             MassPoint {
                 x: 0.0,
-                y1: {
+                y_disk: {
                     let m_disk = mass_disk(30.0, slider_values.get().0, slider_values.get().1) * disk_factor();
                     if m_disk > CHART_BOUND { CHART_BOUND } else { m_disk }
                 },
-                y2: {
+                y_halo_no_clamp: {
+                    mass_halo(30.0, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor()
+                },
+                y_halo: {
                     let m_halo = mass_halo(30.0, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor();
                     if m_halo > CHART_BOUND { CHART_BOUND } else { m_halo }
                 }
@@ -46,10 +50,10 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
     });
 
     let series = Series::new(|data: &MassPoint| data.x)
-        .bar(Bar::new(|data: &MassPoint| data.y1)
+        .bar(Bar::new(|data: &MassPoint| data.y_disk)
             .with_name("Scheibe")
         )
-        .bar(Bar::new(|data: &MassPoint| data.y2)
+        .bar(Bar::new(|data: &MassPoint| data.y_halo)
             .with_name("Halo")
         )
         .with_y_range(0.0, CHART_BOUND);
@@ -64,8 +68,8 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
                 primary=false
             />
             <div id="mass_bar_chart_values">
-                <span>{ move || format!("Scheibe: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y1, mass_point.get()[0].y1 / (mass_point.get()[0].y1 + mass_point.get()[0].y2) * 100.0) }</span>
-                <span>{ move || format!("Halo: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y2, mass_point.get()[0].y2 * 100.0 / (mass_point.get()[0].y1 + mass_point.get()[0].y2)) }</span>
+                <span>{ move || format!("Scheibe: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y_disk, mass_point.get()[0].y_disk / (mass_point.get()[0].y_disk + mass_point.get()[0].y_halo_no_clamp) * 100.0) }</span>
+                <span>{ move || format!("Halo: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y_halo_no_clamp, mass_point.get()[0].y_halo * 100.0 / (mass_point.get()[0].y_disk + mass_point.get()[0].y_halo_no_clamp)) }</span>
             </div>
         </div>
     }
