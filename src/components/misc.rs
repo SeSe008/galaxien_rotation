@@ -69,7 +69,7 @@ fn MassBarChart(slider_values: ReadSignal<(f64, f64, f64, f64)>, iso_nfw: ReadSi
             />
             <div id="mass_bar_chart_values">
                 <span>{ move || format!("Scheibe: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y_disk, mass_point.get()[0].y_disk / (mass_point.get()[0].y_disk + mass_point.get()[0].y_halo_no_clamp) * 100.0) }</span>
-                <span>{ move || format!("Halo: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y_halo_no_clamp, mass_point.get()[0].y_halo * 100.0 / (mass_point.get()[0].y_disk + mass_point.get()[0].y_halo_no_clamp)) }</span>
+                <span>{ move || format!("Halo: {:.2} M☉ * 10^10 ({:.2}%)", mass_point.get()[0].y_halo_no_clamp, mass_point.get()[0].y_halo_no_clamp * 100.0 / (mass_point.get()[0].y_disk + mass_point.get()[0].y_halo_no_clamp)) }</span>
             </div>
         </div>
     }

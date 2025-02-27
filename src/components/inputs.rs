@@ -31,11 +31,19 @@ fn wheel_handle(
         // Get value
         let mut value = input.value().parse::<f64>().unwrap_or(config.min_value);
 
-        // Find direction
+        // Find direction and add value; Shift for bigger step
         if wheel_ev.delta_y() < 0.0 {
-            value += config.step;
+            if !wheel_ev.shift_key() {
+                value += config.step;
+            } else {
+                value += config.step * 10.0;
+            }
         } else {
-            value -= config.step;
+            if !wheel_ev.shift_key() {
+                value -= config.step;
+            } else {
+                value -= config.step * 10.0;
+            }
         }
 
         // Clamp
