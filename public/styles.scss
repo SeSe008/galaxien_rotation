@@ -1,11 +1,13 @@
-$bg-color: #202020;
-$hightlight-color: #0a3c10;
+$color1:#12172b;
+$color2:#314D68;
+$color3: #31684D;
+$color4: #683131;
 
 body {
   position: absolute  ;
   font-family: sans-serif;
   text-align: center;
-  background-color: $bg-color;
+  background-color: $color1;
   color: white;
   display: grid;
   left: 0;
@@ -54,7 +56,7 @@ h1 {
 
     & ._chartistry_tooltip {
       border: 1px solid white !important;
-      background-color: $bg-color !important;
+      background-color: $color1 !important;
       border-radius: 1rem;
       z-index: 10;
     }
@@ -75,14 +77,14 @@ h1 {
   .chart_primary {
     grid-column: 1;
     grid-row: 2 / 4;
-    background-color: $bg-color;
+    background-color: $color1;
   }
 
   #inputs {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: $hightlight-color;
+    background-color: $color2;
     border-radius: 1rem;
     gap: 1rem;
     padding: 1rem;
@@ -137,8 +139,7 @@ h1 {
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
-      background: rgb(255,0,255);
-      background: linear-gradient(90deg, rgba(255,0,255,1) 0%, rgba(255,255,0,1) 100%);
+      background-color: $color1;
       border-radius: 1rem;
       border: 1px solid white;
       height: .75rem;
@@ -156,7 +157,7 @@ h1 {
         height: 1.25rem;
         border-radius: .25rem;
         cursor: pointer;
-        background-color: $bg-color;
+        background-color: $color1;
         border: 1px solid white;
       }
     }
@@ -188,7 +189,7 @@ h1 {
       height: 2rem;
       border-radius: .25rem;
       cursor: pointer;
-      background-color: $bg-color;
+      background-color: $color1;
       border: 1px solid white;
     }
 
@@ -198,7 +199,7 @@ h1 {
       height: 2rem;
       border-radius: .25rem;
       cursor: pointer;
-      background-color: $bg-color;
+      background-color: $color1;
       border: 1px solid white;
     }
   }
@@ -232,9 +233,8 @@ h1 {
     flex-grow: 1;
     width: 100%;
     border: none;
-    background: rgb(255,0,255);
-    background: linear-gradient(90deg, rgba(255,0,255,1) 0%, rgba(255,255,0,1) 100%);
-    color: $bg-color;
+    background-color: $color1;
+    color: $color1;
     font-size: medium;
     padding: 0;
     margin: 0;
@@ -272,17 +272,21 @@ h1 {
   }
 
   .input-switch-highlight-left {
-    background-color: rgb(255, 255 , 0);
+    background-color: $color4;
     grid-column: -25%;
   }
 
   .input-switch-highlight-right {
-    background-color: rgb(255, 0, 255);
+    background-color: $color3;
     left: 25%;
   }
 
+  .input-switch-label {
+    color: white;
+  }
+
   .tab_container {
-    background-color: $hightlight-color;
+    background-color: $color2;
     border-radius: 1rem;
     display: flex;
     flex-direction: column;

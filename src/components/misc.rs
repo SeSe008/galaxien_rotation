@@ -92,7 +92,7 @@ fn Equations(mode: ReadSignal<String>, iso_nfw: ReadSignal<bool>) -> impl IntoVi
             <Show when=move || { mode.get() == "density" }>
                 <TexEquation label="Dichte der Scheibe".to_string() equation=r"\rho_{\text{Disk}}\left(r\right)=\rho_{0_{D}}\cdot{e^{-{\frac{r}{a_{H}}}}}".to_string() />
                 <Show when=move || { !iso_nfw.get() } fallback=|| view!{
-                    <TexEquation label="Dichte des Halos bei einer Dichtefunktion nach einer Isothermen Gaskugel".to_string() equation=r"(\rho_{\text{Halo}}\left(r\right)=\frac{\rho_{0}}{1+\left(\frac{r}{a_{H}}\right)^2}".to_string() />
+                    <TexEquation label="Dichte des Halos bei einer Dichtefunktion nach einer Isothermen Gaskugel".to_string() equation=r"\rho_{\text{Halo}}\left(r\right)=\frac{\rho_{0}}{1+\left(\frac{r}{a_{H}}\right)^2}".to_string() />
                 }>
                     <TexEquation label="Dichte des Halos bei einer Dichtefunktion nach Navarro, Frenk und White".to_string() equation=r"\rho_{\text{Halo}}\left(r\right)=\frac{\rho_{0}}{\frac{r}{a_{H}}\left(1+\frac{r}{a_{H}}\right)^2}".to_string() />
                 </Show>

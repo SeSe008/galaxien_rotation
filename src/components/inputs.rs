@@ -101,8 +101,8 @@ pub fn Inputs(
                             set_iso_nfw(!iso_nfw.get());
                         }
                     >
-                        <span id="input-switch-label">"Dichtefunktion nach einer Isothermen Gaskugel"</span>
-                        <span id="input-switch-label">"Dichtefunktion nach Navarro Frenk White"</span>
+                        <span class="input-switch-label">"Dichtefunktion nach einer Isothermen Gaskugel"</span>
+                        <span class="input-switch-label">"Dichtefunktion nach Navarro Frenk White"</span>
                         <span class=move || {
                             if iso_nfw.get() {
                                 "input-switch-highlight input-switch-highlight-left".to_string()

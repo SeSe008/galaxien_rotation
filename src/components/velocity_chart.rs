@@ -74,7 +74,7 @@ fn get_velocity_points(
     let properties = slider_values.get();
     let iso_nfw_resolved = iso_nfw.get();
 
-    for i in (0..91).map(|x| x as f64 * 0.5) {
+    for i in (0..182).map(|x| x as f64 * 0.25) {
         let x: f64 = i as f64;
         let y = calculate_velocity(
             x,

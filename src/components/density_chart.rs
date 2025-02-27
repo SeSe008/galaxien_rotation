@@ -1,16 +1,15 @@
 use leptos::prelude::*;
 use leptos_chartistry::*;
 use crate::{
-    utils::{
+    elements::default_chart::DefaultChart, utils::{
         calculate_density::*,
         intersection::x_intersection
     },
-    elements::default_chart::DefaultChart
 };
 
 const CHART_BOUND: f64 = 4.0;
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 struct DensityPoint {
     x: f64,
     y1: f64,
@@ -36,8 +35,7 @@ fn get_density_points(
 
     let mut density_points: Vec<DensityPoint> = Vec::new();
 
-    for i in (0..182).map(|x| x as f64 * 0.25) {
-        let x: f64 = i as f64;
+    for x in (0..182).map(|x| x as f64 * 0.25) {
         let y1: f64 = density_disk(x, properties.0, properties.1);
         let y2: f64 = density_halo(x, properties.2, properties.3, iso_nfw_resolved);
 
@@ -47,56 +45,53 @@ fn get_density_points(
     density_points
 }
 
-fn check_intersection(i: usize, density_points: &mut Vec<DensityPoint>, density_point: &DensityPoint, disk_halo: bool) {
-    // If != first point and y > CHART_BOUND + next point < CHART_BOUND
-
-    log::info!("{}", i);
-
-    if i + 1 > density_points.len() {
+fn check_intersection(
+    i: usize,
+    original_points: &[DensityPoint],
+    processed_points: &mut Vec<DensityPoint>,
+    disk_halo: bool,
+    slider_values: ReadSignal<(f64, f64, f64, f64)>,
+    iso_nfw: ReadSignal<bool>
+) {
+    // Check if last point
+    if i >= original_points.len() - 1 {
         return;
     }
 
-    let y: f64;
-    if disk_halo {
-        y = density_point.y1;
+    let current = &original_points[i];
+    let next = &original_points[i + 1];
+
+    let y = if disk_halo { current.y1 } else { current.y2 };
+
+    // No intersection if y is <= CHART_BOUND
+    if y <= CHART_BOUND {
+        return;
+    }
+
+    let next_y = if disk_halo { next.y1 } else { next.y2 };
+
+    // No intersection if next_y is >= CHART_BOUND
+    if next_y >= CHART_BOUND {
+        return;
+    }
+
+    // Compute intersection
+    let intersect_x = x_intersection(next_y, next.x, current.x, y, CHART_BOUND);
+    let intersection_point = if disk_halo {
+        DensityPoint::new(
+            intersect_x, 
+            CHART_BOUND,
+            density_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get())
+        )
     } else {
-        y = density_point.y2;
-    }
+        DensityPoint::new(
+            intersect_x,
+            density_disk(intersect_x, slider_values.get().0, slider_values.get().1),
+            CHART_BOUND
+        )
+    };
 
-
-    if i > 0 && y > CHART_BOUND {
-        let next_y: f64;
-        let next_x: f64 = density_points[i + 1].x;
-
-        if disk_halo {
-            next_y = density_points[i + 1].y1;
-        } else {
-            next_y = density_points[i + 1].y2;
-        }
-
-
-        if next_y < CHART_BOUND {
-            let intersect_x = x_intersection(next_x, next_y, density_point.x, y, CHART_BOUND);
-
-            let intersection_point: DensityPoint;
-
-            if disk_halo {
-                let y2 = density_points
-                    .get(i + 1)
-                    .map_or(f64::NAN, |mp| mp.y2);
-
-                intersection_point = DensityPoint::new(intersect_x, CHART_BOUND, y2)
-            } else {
-                let y1 = density_points
-                    .get(i + 1)
-                    .map_or(f64::NAN, |mp| mp.y1);
-
-                intersection_point = DensityPoint::new(intersect_x, y1, CHART_BOUND)
-            }
-
-            density_points.push(intersection_point);
-        }
-    }
+    processed_points.push(intersection_point);
 }
 
 #[component]
@@ -107,23 +102,25 @@ pub fn DensityChart(
     let density_points = Memo::new(move |_| {
         let density_points_no_bound = get_density_points(slider_values, iso_nfw);
         
-        let mut density_points = Vec::new();
-
-        for (i, density) in density_points_no_bound.iter().enumerate() {
-            log::info!("{}", density.y2);
-            let mut density = *density;
-            // Check if fits into boundary
+        let mut processed = Vec::new();
+        for (i, mut density) in density_points_no_bound.iter().copied().enumerate() {
+            // Check if fits into bound
             if density.y1 > CHART_BOUND {
-                check_intersection(i, &mut density_points, &density, true);
                 density.y1 = f64::NAN;
-            } else if density.y2 > CHART_BOUND {
-                check_intersection(i, &mut density_points, &density, false);
+            }
+
+            if density.y2 > CHART_BOUND {
                 density.y2 = f64::NAN;
             }
-            density_points.push(density);
+
+            processed.push(density);
+            
+            // Check intersection
+            check_intersection(i, &density_points_no_bound, &mut processed, true, slider_values, iso_nfw);
+            check_intersection(i, &density_points_no_bound, &mut processed, false, slider_values, iso_nfw);
         }
 
-        density_points
+        processed
     });
 
     let series: Series<DensityPoint, f64, f64> = Series::new(|data: &DensityPoint| data.x)
