@@ -2,9 +2,36 @@ use crate::components::{
     density_chart::DensityChart, inputs::Inputs, mass_chart::MassChart, misc::Misc,
     velocity_chart::VelocityChart,
 };
-use leptos::prelude::*;
+use leptos::{ev::resize, prelude::*};
 use icondata as i;
 use leptos_icons::Icon;
+use web_sys::UiEvent;
+use leptos_use::{use_event_listener, use_document};
+
+fn get_orientation() -> ReadSignal<bool> {
+    let (is_landscape, set_is_landscape) = signal(false);
+
+    let update_orientation = move || {
+        if let Some(win) = web_sys::window() {
+            let width = win.inner_width().unwrap().as_f64().unwrap();
+            let height = win.inner_height().unwrap().as_f64().unwrap();
+            
+            set_is_landscape(width > height);
+        }
+    };
+
+    update_orientation();
+
+    let _listener = use_event_listener(
+        use_document(),
+        resize,
+        move |_event: UiEvent| {
+            update_orientation();
+        },
+    );
+
+    is_landscape
+}
 
 /// Default Home Page
 #[component]
@@ -13,6 +40,8 @@ pub fn Home() -> impl IntoView {
     // dens_disk, scale_disk, dens_halo, scale_halo
     let (slider_values, set_slider_values) = signal((1.01, 4.5, 1.52e-21, 15.91));
     let (iso_nfw, set_iso_nfw) = signal(true);
+
+    let orientation: ReadSignal<bool> = get_orientation();
 
     view! {
         <ErrorBoundary fallback=|errors| {
@@ -57,18 +86,39 @@ pub fn Home() -> impl IntoView {
                     iso_nfw={iso_nfw}
                 />
             </Show>
-            <Inputs
-                set_mode=set_mode
-                slider_values=slider_values
-                set_slider_values=set_slider_values
-                iso_nfw=iso_nfw
-                set_iso_nfw=set_iso_nfw
-            />
-            <Misc
-                mode=mode
-                iso_nfw=iso_nfw
-                slider_values=slider_values
-            />
+            <Show when=move || orientation.get() fallback=move || view! {
+                <div class="tab_container">
+                    <div class="tab_selector">
+                    </div>
+                    <div class="tab_elements">
+                        <Inputs
+                            set_mode=set_mode
+                            slider_values=slider_values
+                            set_slider_values=set_slider_values
+                            iso_nfw=iso_nfw
+                            set_iso_nfw=set_iso_nfw
+                        />
+                        <Misc
+                            mode=mode
+                            iso_nfw=iso_nfw
+                            slider_values=slider_values
+                        />
+                    </div>
+                </div>
+            } >
+                <Inputs
+                    set_mode=set_mode
+                    slider_values=slider_values
+                    set_slider_values=set_slider_values
+                    iso_nfw=iso_nfw
+                    set_iso_nfw=set_iso_nfw
+                />
+                <Misc
+                    mode=mode
+                    iso_nfw=iso_nfw
+                    slider_values=slider_values
+                />
+            </Show>
         </ErrorBoundary>
     }
 }
