@@ -45,7 +45,7 @@ pub fn Home() -> impl IntoView {
     let orientation: ReadSignal<bool> = get_orientation();
 
     // true = Sliders, false = Misc
-    let (home_tab_mode, set_home_tab_mode) = signal(false);
+    let (home_tab_mode, set_home_tab_mode) = signal(true);
 
     view! {
         <ErrorBoundary fallback=|errors| {
@@ -92,7 +92,7 @@ pub fn Home() -> impl IntoView {
                 />
             </Show>
             <Show when=move || orientation.get() fallback=move || view! {
-                <div class="tab_container">
+                <div class="tab_container" id="home_portrait_tab">
                     <div class="tab_selector">
                         <button on:click=move |_| { set_home_tab_mode.set(true); } >"Eingabe"</button>
                         <button on:click=move |_| { set_home_tab_mode.set(false); } >"Details"</button>
