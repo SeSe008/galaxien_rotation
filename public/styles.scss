@@ -20,6 +20,16 @@ body {
   box-sizing: border-box;
 }
 
+#info {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+  padding: 1rem;
+  width: max-content;
+  height: 1rem;
+}
+
 @media screen and (orientation: landscape) {
   body {
     grid-template-columns: 40% 60%;
@@ -31,16 +41,6 @@ body {
     text-align: center;
     margin: 0 auto;
     padding: 2rem;
-  }
-
-  #icons {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    gap: 5%;
-    padding: 1rem;
-    width: max-content;
-    height: 1rem;
   }
 
   h1 {
@@ -365,5 +365,54 @@ body {
   body {
     grid-template-columns: 1fr;
     grid-template-rows: min-content repeat(2, .5fr);
+  }
+
+  .chart {
+    & > * {
+      fill: white;
+      color: white;
+    }
+
+    & ._chartistry_tooltip {
+      border: 1px solid white !important;
+      background-color: $color1 !important;
+      border-radius: 1rem;
+      z-index: 10;
+    }
+
+    & ._chartistry_series {
+      animation: pathInAniation 2s forwards;
+      stroke-dasharray: 200%;
+      stroke-dashoffset: 200%;
+    }
+  }
+
+  .tab_container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: .25fr .75fr;
+
+    .tab_selector {
+      display: flex;
+      justify-content: flex-start;
+      height: min-content;
+      margin-top: .25rem;
+      padding: 0 .5rem;
+      gap: .25rem;
+      border-bottom: 1px solid white;
+  
+      & > button {
+        background-color: transparent;
+        color: white;
+        font-size: 1rem;
+        border: 1px solid white;
+        border-radius: .25rem .25rem 0 0;        
+      }
+    }
+  
+    .tab_elements {
+      height: 100%;
+      padding: .5rem;
+    }  
   }
 }

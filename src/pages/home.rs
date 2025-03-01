@@ -9,6 +9,7 @@ use web_sys::UiEvent;
 use leptos_use::{use_event_listener, use_document};
 
 fn get_orientation() -> ReadSignal<bool> {
+    // Create a signal that detects orientation
     let (is_landscape, set_is_landscape) = signal(false);
 
     let update_orientation = move || {
@@ -43,6 +44,9 @@ pub fn Home() -> impl IntoView {
 
     let orientation: ReadSignal<bool> = get_orientation();
 
+    // true = Sliders, false = Misc
+    let (home_tab_mode, set_home_tab_mode) = signal(false);
+
     view! {
         <ErrorBoundary fallback=|errors| {
             view! {
@@ -66,6 +70,7 @@ pub fn Home() -> impl IntoView {
                 <a href="https://github.com/SeSe008/galaxien_rotation"><Icon icon={i::IoLogoGithub} style="color: white"/></a>
                 <a href="mailto:s.radenba@gmail.com"><Icon icon={i::MdiEmail} style="color: white"/></a>
                 <a href="https://discord.com/users/813744649440722956"><Icon icon={i::BiDiscordAlt} style="color: white"/></a>
+                <span>"Made by Se"</span>
             </div>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
@@ -89,20 +94,25 @@ pub fn Home() -> impl IntoView {
             <Show when=move || orientation.get() fallback=move || view! {
                 <div class="tab_container">
                     <div class="tab_selector">
+                        <button on:click=move |_| { set_home_tab_mode.set(true); } >"Eingabe"</button>
+                        <button on:click=move |_| { set_home_tab_mode.set(false); } >"Details"</button>
                     </div>
                     <div class="tab_elements">
-                        <Inputs
-                            set_mode=set_mode
-                            slider_values=slider_values
-                            set_slider_values=set_slider_values
-                            iso_nfw=iso_nfw
-                            set_iso_nfw=set_iso_nfw
-                        />
-                        <Misc
+                        <Show when=move || home_tab_mode.get() fallback=move || view!{
+                            <Misc
                             mode=mode
                             iso_nfw=iso_nfw
                             slider_values=slider_values
-                        />
+                            />
+                        } >
+                            <Inputs
+                                set_mode=set_mode
+                                slider_values=slider_values
+                                set_slider_values=set_slider_values
+                                iso_nfw=iso_nfw
+                                set_iso_nfw=set_iso_nfw
+                            />
+                        </Show>
                     </div>
                 </div>
             } >
