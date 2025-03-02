@@ -66,7 +66,7 @@ pub fn Home() -> impl IntoView {
                 </ul>
             }
         }>
-            <div id="icons">
+            <div id="info">
                 <a href="https://github.com/SeSe008/galaxien_rotation"><Icon icon={i::IoLogoGithub} style="color: white"/></a>
                 <a href="mailto:s.radenba@gmail.com"><Icon icon={i::MdiEmail} style="color: white"/></a>
                 <a href="https://discord.com/users/813744649440722956"><Icon icon={i::BiDiscordAlt} style="color: white"/></a>
