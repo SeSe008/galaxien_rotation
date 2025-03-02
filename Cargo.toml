@@ -1,6 +1,6 @@
 [package]
 name = "galaxien_rotation"
-version = "0.5.5"
+version = "0.7.0"
 edition = "2021"
 authors = ["SeSe008 <s.radenba@gmail.com>"]
 
