@@ -76,6 +76,7 @@ fn wheel_handle(
 #[component]
 pub fn Inputs(
     set_mode: WriteSignal<String>,
+    mode: ReadSignal<String>,
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     set_slider_values: WriteSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>,
@@ -143,6 +144,8 @@ pub fn Inputs(
         })
         .collect();
 
+    let mode_options = ["velocity", "mass", "density"];
+
     view! {
         <div id="inputs">
             <div class="input-vertical">
@@ -151,9 +154,9 @@ pub fn Inputs(
                         type="range"
                         min="0"
                         max="2"
-                        value="0"
+                        value=move || mode_options.iter().position(|&m| m == mode.get()).unwrap_or(0).to_string()
                         on:input= move |ev| {
-                            set_mode((["velocity", "mass", "density"][ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<usize>().unwrap()]).to_string());
+                            set_mode((mode_options[ev.target().unwrap().dyn_into::<HtmlInputElement>().unwrap().value().parse::<usize>().unwrap()]).to_string());
                         }
                     />
                 </div>
@@ -165,9 +168,9 @@ pub fn Inputs(
             </div>
             <div class="input-section">
                 <div class="input-vertical">
-                    <label for="density-disk">"Anfangsflächendichte der Scheibe:"</label>
                     <div id="density-disk" class="input-range-cont-with-value">
-                        <div class="input-small-range-inner-cont"> <input class="small-range" id="density-disk"
+                        <label for="density-disk">"Anfangsflächendichte der Scheibe:"</label>
+                        <div class="input-small-range-inner-cont"><input class="small-range" id="density-disk"
                             type="range"
                             min="1"
                             max="200"
@@ -182,8 +185,8 @@ pub fn Inputs(
                     </div>
                 </div>
                 <div class="input-vertical">
-                    <label for="scale-disk">"Skalenlänge der Scheibe:"</label>
                     <div id="scale-disk" class="input-range-cont-with-value">
+                        <label for="scale-disk">"Skalenlänge der Scheibe:"</label>
                         <div class="input-small-range-inner-cont"> <input class="small-range" id="density-disk"
                             type="range"
                             min="20"
@@ -201,8 +204,8 @@ pub fn Inputs(
             </div>
             <div class="input-section">
                 <div class="input-vertical">
-                    <label for="density-halo">"Anfangsdichte des Halos:"</label>
-                    <div id="density-disk" class="input-range-cont-with-value">
+                    <div id="density-halo" class="input-range-cont-with-value">
+                        <label for="density-halo">"Anfangsdichte des Halos:"</label>
                         <div class="input-small-range-inner-cont"> <input class="small-range" id="density-halo"
                             type="range"
                             min="1"
@@ -219,9 +222,9 @@ pub fn Inputs(
                     </div>
                 </div>
                 <div class="input-vertical">
-                    <label for="scale-halo">"Skalenlänge des Halos:"</label>
                     <div id="scale-haloe" class="input-range-cont-with-value">
-                        <div class="input-small-range-inner-cont"> <input class="small-range" id="density-halo"
+                            <label for="scale-halo">"Skalenlänge des Halos:"</label>
+                            <div class="input-small-range-inner-cont"> <input class="small-range" id="density-halo"
                             type="range"
                             min="1"
                             max="3180"

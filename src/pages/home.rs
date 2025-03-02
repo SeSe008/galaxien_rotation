@@ -107,6 +107,7 @@ pub fn Home() -> impl IntoView {
                         } >
                             <Inputs
                                 set_mode=set_mode
+                                mode=mode
                                 slider_values=slider_values
                                 set_slider_values=set_slider_values
                                 iso_nfw=iso_nfw
@@ -118,6 +119,7 @@ pub fn Home() -> impl IntoView {
             } >
                 <Inputs
                     set_mode=set_mode
+                    mode=mode
                     slider_values=slider_values
                     set_slider_values=set_slider_values
                     iso_nfw=iso_nfw

@@ -15,7 +15,8 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -28,6 +29,13 @@ body {
   padding: 1rem;
   width: 100%;
   height: 1rem;
+  box-sizing: border-box;
+}
+
+@keyframes pathInAniation {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @media screen and (orientation: landscape) {
@@ -49,28 +57,22 @@ body {
   }
 
   .chart {    
-    & > * {
+    > * {
       fill: white;
       color: white;
     }
 
-    & ._chartistry_tooltip {
+    ._chartistry_tooltip {
       border: 1px solid white !important;
       background-color: $color1 !important;
       border-radius: 1rem;
       z-index: 10;
     }
 
-    & ._chartistry_series {
+    ._chartistry_series {
       animation: pathInAniation 2s forwards;
       stroke-dasharray: 200%;
       stroke-dashoffset: 200%;
-    }
-  }
-
-  @keyframes pathInAniation {
-    to {
-      stroke-dashoffset: 0;
     }
   }
 
@@ -119,12 +121,16 @@ body {
 
   .input-range-cont-with-value {
     display: grid;
-    grid-template-columns: repeat(2 1fr);
-    grid-template-rows: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: .5rem;
 
-    & > * {
-      grid-row: 1;
+    > label {
+      grid-column: 1 / 3;
+    }
+
+    > input, > span {
+      grid-row: 2;
       flex-grow: 1;
     }
   }
@@ -135,7 +141,7 @@ body {
     display: flex;
     align-items: center;
 
-    & > input {
+    > input {
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
@@ -240,14 +246,14 @@ body {
     margin: 0;
     cursor: pointer;
 
-    & > *:nth-child(1) {
+    > *:nth-child(1) {
       grid-column: 1;
       grid-row: 1;
       z-index: 1;
       padding: 1rem;
     }
 
-    & > *:nth-child(2) {
+    > *:nth-child(2) {
       grid-column: 2;
       grid-row: 1;
       z-index: 1;
@@ -301,7 +307,7 @@ body {
     gap: .5rem;
     border-bottom: 1px solid white;
 
-    & > button {
+    > button {
       background-color: transparent;
       color: white;
       font-size: 1rem;
@@ -334,14 +340,14 @@ body {
     flex-direction: column;
     height: 100%;
 
-    & > .chart {
+    > .chart {
       height: 100%;
 
-      & ._chartistry_tooltip {
+      ._chartistry_tooltip {
         display: none;
       }
 
-      & ._chartistry_tick_label {
+      ._chartistry_tick_label {
         display: none;
       }
     }
@@ -353,7 +359,7 @@ body {
     justify-content: center;
     gap: 1rem;
     
-    & > span {
+    > span {
       border: 1px solid white;
       border-radius: 1rem;
       padding: 1rem;
@@ -371,22 +377,28 @@ body {
   .chart {
     height: 100%;
     max-width: 100%;
-    overflow: hidden;
     box-sizing: border-box;
 
-    & > * {
+    > * {
       fill: white;
       color: white;
     }
 
-    & ._chartistry_tooltip {
+    ._chartistry_tooltip {
       border: 1px solid white !important;
       background-color: $color1 !important;
       border-radius: 1rem;
       z-index: 10;
+
+      ._chartistry_snippet {
+        font-size: 0;
+        > *:not(svg) {
+          display: none;
+        }
+      }
     }
 
-    & ._chartistry_series {
+    ._chartistry_series {
       animation: pathInAniation 2s forwards;
       stroke-dasharray: 200%;
       stroke-dashoffset: 200%;
@@ -397,7 +409,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: min-content 1fr;
-    max-height: 100%;
+    height: 100%;
     overflow: hidden;
     box-sizing: border-box;
   }
@@ -413,7 +425,7 @@ body {
     overflow: hidden;
     box-sizing: border-box;
 
-    & > button {
+    > button {
       background-color: transparent;
       color: white;
       font-size: 1rem;
@@ -433,5 +445,170 @@ body {
   #home_portrait_tab {
     background-color: $color2;
     border-radius: 1rem;
+  }
+
+  #inputs {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 1rem;
+    gap: .5rem;
+  }
+
+  .input-vertical {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-horizontal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: .5rem;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  .input-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    border: 1px solid white;
+    border-radius: 1rem;
+    padding: 1rem;
+  }
+
+  .input-range-cont-with-value {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+
+    > * {
+      grid-row: 1;
+      flex-grow: 1;
+    }
+  }
+
+  .input-small-range-inner-cont {
+    flex-grow: 1;
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+
+    > input {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: $color1;
+      border-radius: 1rem;
+      border: 1px solid white;
+      height: .75rem;
+      
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: .25rem;
+        background-color: $color1;
+        border: 1px solid white;
+      }
+    }
+  }
+
+  #mode-range-cont {
+    height: 1rem;
+    width: 100%;
+  }
+
+  #mode-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    border-radius: 1rem;
+    height: 1rem;
+    transition: opacity .2s;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 1rem;
+      height: 2rem;
+      border-radius: .25rem;
+      background-color: $color1;
+      border: 1px solid white;
+    }
+
+    &::-moz-range-thumb {
+      appearance: none;
+      width: 1rem;
+      height: 2rem;
+      border-radius: .25rem;
+      background-color: $color1;
+      border: 1px solid white;
+    }
+  }
+
+  #mode-labels {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: .5rem;
+
+     > span {
+      flex: 1;
+    
+      &:nth-child(1) {
+        text-align: left;
+      }
+  
+      &:nth-child(2) {
+        text-align: center;
+      }
+  
+      &:nth-child(3) {
+        text-align: right;
+      }
+    }
+  }
+
+  #equations {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  #mass_bar_chart {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    > .chart {
+      max-height: 90%;
+
+      ._chartistry_tooltip {
+        display: none;
+      }
+
+      ._chartistry_tick_label {
+        display: none;
+      }
+    }
+  }
+
+  #mass_bar_chart_values {
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    gap: .25rem;
+
+    > span {
+      border: 1px solid white;
+      border-radius: 1rem;
+      padding: .25rem;
+    }
   }
 }

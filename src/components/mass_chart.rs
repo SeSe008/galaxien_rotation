@@ -108,7 +108,6 @@ fn check_intersection(
         )
     };
 
-    log::info!("Intersection-Point: {:#?}", intersection_point);
     mass_points.push(intersection_point);
 }
 
