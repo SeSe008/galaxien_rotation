@@ -1,0 +1,55 @@
+{
+    "home": {
+        "Made by Se": "Von Se programmiert",
+        "Inputs": "Eingabe",
+        "Details": "Details"
+    },
+    "inputs": {
+        "Velocity": "Geschwindigkeit",
+        "Mass": "Masse",
+        "Density": "Dichte",
+        "Initial surface density of the disk": "Anfangsflächendichte der Scheibe",
+        "Scale length of the disk": "Skalenlänge der Scheibe",
+        "Initial surface density of the halo": "Anfangsflächendichte des Halos",
+        "Scale length of the halo": "Skalenlänge des Halos",
+        "Density function according to an isothermal gas sphere": "Dichtefunktion nach einer Isothermen Gaskugel",
+        "Density function according to Navarro, Frenk, and White": "Dichtefunktion nach Navarro, Frenk, und White"
+    },
+    "velocity": {
+        "Sample Values (NGC3198)": "Musterwerte (NGC3198)",
+        "Galaxy": "Galaxie",
+        "Velocity (km/s)": "Geschwindigkeit (km/s)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "mass": {
+        "Disk": "Scheibe",
+        "Halo": "Halo",
+        "Mass (10^10 * M☉)": "Masse (10^10 * M☉)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "density": {
+        "Disk": "Scheibe",
+        "Halo": "Halo",
+        "Density (10^10 * M☉)": "Dichte (10^-21)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "misc": {
+        "Details for mass at 30kpc": "Details für Masse bei 30kpc",
+        "Equations": "Formeln"
+    },
+    "mass_bar_chart": {
+        "Disk": "Scheibe",
+        "Halo": "Halo",
+        "Mass (10^10 * M☉)": "Masse (10^10 * M☉)"
+    },
+    "equations": {
+        "Velocity of the disk": "Geschwindigkeit der Scheibe",
+        "Velocity of the halo": "Geschwindigkeit des Halos",
+        "Mass of the disk": "Masse der Scheibe",
+        "Mass of the halo with a density function according to an isothermal gas sphere": "Masse des Halos bei einer Dichtefunktion nach einer Isothermen Gaskugel",
+        "Mass of the halo with a density function according to Navarro, Frenk, and White": "Masse des Halos bei einer Dichtefunktion nach Navarro, Frenk, und White",
+        "Density of the disk": "Dichte der Scheibe",
+        "Density of the halo according to an isothermal gas sphere": "Dichte des Halos nach einer Isothermen Gaskugel",
+        "Density of the halo according to Navarro, Frenk, and White": "Dichte des Halos nach Navarro, Frenk und White"
+    }
+}

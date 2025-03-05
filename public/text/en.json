@@ -1,0 +1,55 @@
+{
+    "home": {
+        "Made by Se": "Made By Se",
+        "Inputs": "Inputs",
+        "Details": "Details"
+    },
+    "inputs": {
+        "Velocity": "Velocity",
+        "Mass": "Mass",
+        "Density": "Density",
+        "Initial surface density of the disk": "Initial surface density of the disk",
+        "Scale length of the disk": "Scale length of the disk",
+        "Initial density of the halo": "Initial density of the halo",
+        "Scale length of the halo": "Scale length of the halo",
+        "Density function according to an isothermal gas sphere": "Density function according to an isothermal gas sphere",
+        "Density function according to Navarro, Frenk, and White": "Density function according to Navarro, Frenk, and White"
+    },
+    "velocity": {
+        "Sample Values (NGC3198)": "Sample Values (NGC3198)",
+        "Galaxy": "Galaxy",
+        "Velocity (km/s)": "Velocity (km/s)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "mass": {
+        "Disk": "Disk",
+        "Halo": "Halo",
+        "Mass (10^10 * M☉)": "Mass (10^10 * M☉)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "density": {
+        "Disk": "Disk",
+        "Halo": "Halo",
+        "Density (10^10 * M☉)": "Density (10^-21)",
+        "Radius (kpc)": "Radius (kpc)"
+    },
+    "misc": {
+        "Details for mass at 30kpc": "Details for mass at 30kpc",
+        "Equations": "Equations"
+    },
+    "mass_bar_chart": {
+        "Disk": "Disk",
+        "Halo": "Halo",
+        "Mass (10^10 * M☉)": "Mass (10^10 * M☉)"
+    },
+    "equations": {
+        "Velocity of the disk": "Velocity of the disk",
+        "Velocity of the halo": "Velocity of the halo",
+        "Mass of the disk": "Mass of the disk",
+        "Mass of the halo with a density function according to an isothermal gas sphere": "Mass of the halo with a density function according to an isothermal gas sphere",
+        "Mass of the halo with a density function according to Navarro, Frenk, and White": "Mass of the halo with a density function according to Navarro, Frenk, and White",
+        "Density of the disk": "Density of the disk",
+        "Density of the halo according to an isothermal gas sphere": "Density of the halo according to an isothermal gas sphere",
+        "Density of the halo according to Navarro, Frenk, and White": "Density of the halo according to Navarro, Frenk, and White"
+    }
+}

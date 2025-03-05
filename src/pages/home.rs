@@ -2,9 +2,11 @@ use crate::components::{
     density_chart::DensityChart, inputs::Inputs, mass_chart::MassChart, misc::Misc,
     velocity_chart::VelocityChart,
 };
+use crate::utils::translation::{get_translation, Translation};
 use leptos::{ev::resize, prelude::*};
 use icondata as i;
 use leptos_icons::Icon;
+use wasm_bindgen_futures::spawn_local;
 use web_sys::UiEvent;
 use leptos_use::{use_event_listener, use_document};
 
@@ -47,6 +49,15 @@ pub fn Home() -> impl IntoView {
     // true = Sliders, false = Misc
     let (home_tab_mode, set_home_tab_mode) = signal(true);
 
+    // Language settings
+    let language_options: [&str; 2] = ["en", "de"];
+    let (language, set_language) = signal(language_options[0]);
+    let (text, set_text) = signal(Translation::new());
+    spawn_local(async move {
+        let lang = language.get();
+        let translation = get_translation(lang).await;
+        set_text(translation);
+    });
     view! {
         <ErrorBoundary fallback=|errors| {
             view! {
@@ -67,11 +78,21 @@ pub fn Home() -> impl IntoView {
             }
         }>
             <div id="info">
+                <input type="button" id="language_change" value=move || language.get() on:click=move |_| {
+                    set_language(language_options[(language_options.iter().position(|&lang| lang == language.get()).unwrap_or(0) + 1) % language_options.len()])
+                } />
                 <a href="https://github.com/SeSe008/galaxien_rotation"><Icon icon={i::IoLogoGithub} style="color: white"/></a>
                 <a href="mailto:s.radenba@gmail.com"><Icon icon={i::MdiEmail} style="color: white"/></a>
                 <a href="https://discord.com/users/813744649440722956"><Icon icon={i::BiDiscordAlt} style="color: white"/></a>
-                <span>"Made by Se"</span>
-            </div>
+                <span>{
+                    move || {
+                        text.get().0
+                            .get("home")
+                            .and_then(|section| section.get("Made by Se"))
+                            .cloned()
+                            .unwrap_or_default()
+                    }
+                }</span>            </div>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
                 <VelocityChart 

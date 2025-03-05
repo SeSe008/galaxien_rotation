@@ -137,7 +137,7 @@ pub fn DensityChart(
 
     view! {
         <DefaultChart
-            y_label="Dichte (* 10^-21)".to_string()
+            y_label="Dichte (10^-21)".to_string()
             x_label="Radius (kpc)".to_string()
             series={series}
             data=density_points

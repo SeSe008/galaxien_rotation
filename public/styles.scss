@@ -32,6 +32,16 @@ body {
   box-sizing: border-box;
 }
 
+#language_change {
+  height: min-content;
+  padding: .25rem;
+  font-size: .75rem;
+  border: 1px solid white;
+  border-radius: .25rem;
+  background-color: transparent;
+  color: white;
+}
+
 .chart {
   height: 100%;
   width: 100%;

@@ -22,6 +22,9 @@ leptos_icons = "0.5.0"
 icondata = "0.5.0"
 wasm-bindgen-futures = "0.4.50"
 leptos-use = "0.15.6"
+serde_json = "1.0.140"
+serde = "1.0.218"
+reqwasm = "0.5.0"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }
