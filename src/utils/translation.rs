@@ -7,6 +7,7 @@ use reqwasm::http::Request;
 pub struct Translation(
     pub HashMap<String, HashMap<String, String>>
 );
+
 impl Translation {
     pub fn new() -> Self {
         Translation(HashMap::new())

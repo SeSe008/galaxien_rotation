@@ -297,7 +297,7 @@ body {
   }
 }
 
-@media screen and (orientation: landscape) {
+@media screen and (orientation: landscape) and (min-width: 1024px) {
   body {
     grid-template-columns: 40% 60%;
     grid-template-rows: min-content auto 1fr;
@@ -438,7 +438,7 @@ body {
   }
 }
 
-@media screen and (orientation: portrait) {
+@media screen and (orientation: portrait) and (max-width: 1024px) {
   body {
     grid-template-columns: 1fr;
     grid-template-rows: min-content 1fr 1fr;

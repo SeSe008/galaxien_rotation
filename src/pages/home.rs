@@ -36,6 +36,14 @@ fn get_orientation() -> ReadSignal<bool> {
     is_landscape
 }
 
+pub fn update_text(language: ReadSignal<String>, set_text: impl Fn(Translation) + 'static) {
+    let lang = language.get_untracked().to_string();
+    spawn_local(async move {
+        let translation = get_translation(lang.as_str()).await;
+        set_text(translation);
+    });
+}
+
 /// Default Home Page
 #[component]
 pub fn Home() -> impl IntoView {
@@ -51,12 +59,11 @@ pub fn Home() -> impl IntoView {
 
     // Language settings
     let language_options: [&str; 2] = ["en", "de"];
-    let (language, set_language) = signal(language_options[0]);
+    let (language, set_language) = signal(language_options[0].to_string());
     let (text, set_text) = signal(Translation::new());
-    spawn_local(async move {
-        let lang = language.get();
-        let translation = get_translation(lang).await;
-        set_text(translation);
+
+    let home_text = Memo::new(move |_| {
+        text.get().0.get("home").cloned().unwrap_or_default()
     });
     view! {
         <ErrorBoundary fallback=|errors| {
@@ -78,66 +85,92 @@ pub fn Home() -> impl IntoView {
             }
         }>
             <div id="info">
-                <input type="button" id="language_change" value=move || language.get() on:click=move |_| {
-                    set_language(language_options[(language_options.iter().position(|&lang| lang == language.get()).unwrap_or(0) + 1) % language_options.len()])
-                } />
-                <a href="https://github.com/SeSe008/galaxien_rotation"><Icon icon={i::IoLogoGithub} style="color: white"/></a>
-                <a href="mailto:s.radenba@gmail.com"><Icon icon={i::MdiEmail} style="color: white"/></a>
-                <a href="https://discord.com/users/813744649440722956"><Icon icon={i::BiDiscordAlt} style="color: white"/></a>
-                <span>{
-                    move || {
-                        text.get().0
-                            .get("home")
-                            .and_then(|section| section.get("Made by Se"))
-                            .cloned()
-                            .unwrap_or_default()
+                <input
+                    type="button"
+                    id="language_change"
+                    value=move || language.get()
+                    on:click=move |_| {
+                        set_language(
+                            language_options[(language_options
+                                    .iter()
+                                    .position(|&lang| lang == language.get())
+                                    .unwrap_or(0) + 1) % language_options.len()]
+                                .to_string(),
+                        );
+                        update_text(language, set_text);
                     }
-                }</span>            </div>
+                />
+                <a href="https://github.com/SeSe008/galaxien_rotation">
+                    <Icon icon=i::IoLogoGithub style="color: white" />
+                </a>
+                <a href="mailto:s.radenba@gmail.com">
+                    <Icon icon=i::MdiEmail style="color: white" />
+                </a>
+                <a href="https://discord.com/users/813744649440722956">
+                    <Icon icon=i::BiDiscordAlt style="color: white" />
+                </a>
+                <span>
+                    {move || { home_text.get().get("Made by Se").cloned().unwrap_or_default() }}
+                </span>
+            </div>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
-                <VelocityChart 
-                    slider_values={slider_values}
-                    iso_nfw={iso_nfw}
-                />
+                <VelocityChart slider_values=slider_values iso_nfw=iso_nfw />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
-                <MassChart
-                slider_values={slider_values}
-                iso_nfw={iso_nfw}
-            />
+                <MassChart slider_values=slider_values iso_nfw=iso_nfw />
             </Show>
             <Show when=move || { mode.get() == "density" }>
-                <DensityChart 
-                    slider_values={slider_values}
-                    iso_nfw={iso_nfw}
-                />
+                <DensityChart slider_values=slider_values iso_nfw=iso_nfw />
             </Show>
-            <Show when=move || orientation.get() fallback=move || view! {
-                <div class="tab_container" id="home_portrait_tab">
-                    <div class="tab_selector">
-                        <button on:click=move |_| { set_home_tab_mode.set(true); } >"Eingabe"</button>
-                        <button on:click=move |_| { set_home_tab_mode.set(false); } >"Details"</button>
-                    </div>
-                    <div class="tab_elements">
-                        <Show when=move || home_tab_mode.get() fallback=move || view!{
-                            <Misc
-                            mode=mode
-                            iso_nfw=iso_nfw
-                            slider_values=slider_values
-                            />
-                        } >
-                            <Inputs
-                                set_mode=set_mode
-                                mode=mode
-                                slider_values=slider_values
-                                set_slider_values=set_slider_values
-                                iso_nfw=iso_nfw
-                                set_iso_nfw=set_iso_nfw
-                            />
-                        </Show>
-                    </div>
-                </div>
-            } >
+            <Show
+                when=move || orientation.get()
+                fallback=move || {
+                    view! {
+                        <div class="tab_container" id="home_portrait_tab">
+                            <div class="tab_selector">
+                                <button on:click=move |_| {
+                                    set_home_tab_mode.set(true);
+                                }>
+                                    {move || {
+                                        home_text.get().get("Input").cloned().unwrap_or_default()
+                                    }}
+                                </button>
+                                <button on:click=move |_| {
+                                    set_home_tab_mode.set(false);
+                                }>
+                                    {move || {
+                                        home_text.get().get("Details").cloned().unwrap_or_default()
+                                    }}
+                                </button>
+                            </div>
+                            <div class="tab_elements">
+                                <Show
+                                    when=move || home_tab_mode.get()
+                                    fallback=move || {
+                                        view! {
+                                            <Misc
+                                                mode=mode
+                                                iso_nfw=iso_nfw
+                                                slider_values=slider_values
+                                            />
+                                        }
+                                    }
+                                >
+                                    <Inputs
+                                        set_mode=set_mode
+                                        mode=mode
+                                        slider_values=slider_values
+                                        set_slider_values=set_slider_values
+                                        iso_nfw=iso_nfw
+                                        set_iso_nfw=set_iso_nfw
+                                    />
+                                </Show>
+                            </div>
+                        </div>
+                    }
+                }
+            >
                 <Inputs
                     set_mode=set_mode
                     mode=mode
@@ -146,11 +179,7 @@ pub fn Home() -> impl IntoView {
                     iso_nfw=iso_nfw
                     set_iso_nfw=set_iso_nfw
                 />
-                <Misc
-                    mode=mode
-                    iso_nfw=iso_nfw
-                    slider_values=slider_values
-                />
+                <Misc mode=mode iso_nfw=iso_nfw slider_values=slider_values />
             </Show>
         </ErrorBoundary>
     }
