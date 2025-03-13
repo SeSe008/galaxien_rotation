@@ -13,9 +13,13 @@ impl Translation {
         Translation(HashMap::new())
     }
 }
+
 pub async fn get_translation(language: &str) -> Translation {
     // Retrieve the json file
-    let resp = Request::get(&format!("/text/{}.json", language)).send().await.unwrap();
+    let resp = Request::get(&format!("/text/{}.json", language)).send().await.unwrap_or_else(|err| {
+        log::error!("Failed to get text response: {:?}", err);
+        wasm_bindgen::throw_str("Failed to get text response");
+    });
     let text = resp.text().await.unwrap();
     
     // Map the json into hashmap

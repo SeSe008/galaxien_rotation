@@ -1,11 +1,11 @@
 use std::f64;
 
 use crate::{
+    elements::default_chart::DefaultChart,
     utils::{
-        calculate_velocity::calculate_velocity,
-        intersection::x_intersection
+        calculate_velocity::calculate_velocity, intersection::x_intersection,
+        translation::Translation,
     },
-    elements::default_chart::DefaultChart
 };
 use leptos::prelude::*;
 use leptos_chartistry::*;
@@ -33,34 +33,34 @@ impl VelocityPoint {
 
 fn get_defined_points() -> Vec<VelocityPoint> {
     vec![
-        VelocityPoint { x: 0.0, y: 0.0 },
-        VelocityPoint { x: 1.0, y: 55.0 },
-        VelocityPoint { x: 2.0, y: 92.0 },
-        VelocityPoint { x: 3.0, y: 110.0 },
-        VelocityPoint { x: 4.0, y: 123.0 },
-        VelocityPoint { x: 5.0, y: 134.0 },
-        VelocityPoint { x: 6.0, y: 142.0 },
-        VelocityPoint { x: 7.0, y: 145.0 },
-        VelocityPoint { x: 8.0, y: 147.0 },
-        VelocityPoint { x: 9.0, y: 148.0 },
-        VelocityPoint { x: 10.0, y: 152.0 },
-        VelocityPoint { x: 11.0, y: 155.0 },
-        VelocityPoint { x: 12.0, y: 156.0 },
-        VelocityPoint { x: 13.0, y: 157.0 },
-        VelocityPoint { x: 14.0, y: 153.0 },
-        VelocityPoint { x: 15.0, y: 154.0 },
-        VelocityPoint { x: 16.0, y: 153.0 },
-        VelocityPoint { x: 17.0, y: 150.0 },
-        VelocityPoint { x: 18.0, y: 149.0 },
-        VelocityPoint { x: 19.0, y: 148.0 },
-        VelocityPoint { x: 20.0, y: 146.0 },
-        VelocityPoint { x: 21.0, y: 147.0 },
-        VelocityPoint { x: 22.0, y: 148.0 },
-        VelocityPoint { x: 23.0, y: 148.0 },
-        VelocityPoint { x: 24.0, y: 149.0 },
-        VelocityPoint { x: 25.0, y: 150.0 },
-        VelocityPoint { x: 26.0, y: 150.0 },
-        VelocityPoint { x: 27.0, y: 149.0 },
+        VelocityPoint::new(0.0, 0.0),
+        VelocityPoint::new(1.0, 55.0),
+        VelocityPoint::new(2.0, 92.0),
+        VelocityPoint::new(3.0, 110.0),
+        VelocityPoint::new(4.0, 123.0),
+        VelocityPoint::new(5.0, 134.0),
+        VelocityPoint::new(6.0, 142.0),
+        VelocityPoint::new(7.0, 145.0),
+        VelocityPoint::new(8.0, 147.0),
+        VelocityPoint::new(9.0, 148.0),
+        VelocityPoint::new(10.0, 152.0),
+        VelocityPoint::new(11.0, 155.0),
+        VelocityPoint::new(12.0, 156.0),
+        VelocityPoint::new(13.0, 157.0),
+        VelocityPoint::new(14.0, 153.0),
+        VelocityPoint::new(15.0, 154.0),
+        VelocityPoint::new(16.0, 153.0),
+        VelocityPoint::new(17.0, 150.0),
+        VelocityPoint::new(18.0, 149.0),
+        VelocityPoint::new(19.0, 148.0),
+        VelocityPoint::new(20.0, 146.0),
+        VelocityPoint::new(21.0, 147.0),
+        VelocityPoint::new(22.0, 148.0),
+        VelocityPoint::new(23.0, 148.0),
+        VelocityPoint::new(24.0, 149.0),
+        VelocityPoint::new(25.0, 150.0),
+        VelocityPoint::new(26.0, 150.0),
+        VelocityPoint::new(27.0, 149.0),
     ]
 }
 
@@ -90,16 +90,20 @@ fn get_velocity_points(
     velocity_points
 }
 
-fn check_intersection(i: usize, velocity_points: &[VelocityPoint], defined_points: &[VelocityPoint], velocity: &VelocityPoint, combined: &mut Vec<CombinedPoints>) {
+fn check_intersection(
+    i: usize,
+    velocity_points: &[VelocityPoint],
+    defined_points: &[VelocityPoint],
+    velocity: &VelocityPoint,
+    combined: &mut Vec<CombinedPoints>,
+) {
     // If != first point and y > CHART_BOUND + previous point < CHART_BOUND
     if i > 0 && velocity.y > CHART_BOUND {
         let prev = velocity_points[i - 1];
 
         if prev.y < CHART_BOUND {
             let intersect_x = x_intersection(prev.x, prev.y, velocity.x, velocity.y, CHART_BOUND);
-            let defined_y = defined_points
-                .get((i - 1) / 2)
-                .map_or(f64::NAN, |dp| dp.y);
+            let defined_y = defined_points.get((i - 1) / 2).map_or(f64::NAN, |dp| dp.y);
 
             let intersection_point = CombinedPoints {
                 x: intersect_x,
@@ -118,7 +122,6 @@ fn combine_points(
     let mut combined: Vec<CombinedPoints> = Vec::new();
 
     for (i, velocity) in velocity_points.iter().enumerate() {
-
         check_intersection(i, velocity_points, defined_points, velocity, &mut combined);
 
         // If the current y is above the CHART_BOUND, use NaN.
@@ -128,9 +131,7 @@ fn combine_points(
             velocity.y
         };
 
-        let defined_y = defined_points
-            .get(i / 2)
-            .map_or(f64::NAN, |dp| dp.y);
+        let defined_y = defined_points.get(i / 2).map_or(f64::NAN, |dp| dp.y);
 
         let current_point = CombinedPoints {
             x: velocity.x,
@@ -147,7 +148,41 @@ fn combine_points(
 pub fn VelocityChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>,
+    text: ReadSignal<Translation>,
 ) -> impl IntoView {
+    // Get velocity section of text
+    let velocity_text: Memo<std::collections::HashMap<String, String>> =
+        Memo::new(move |_| text.get().0.get("velocity").cloned().unwrap_or_default());
+
+    // Derive signals of text
+    let sample_values_name = Signal::derive(move || {
+        velocity_text
+            .get()
+            .get("Sample Values (NGC 3198)")
+            .cloned()
+            .unwrap_or("Sample Values (NGC 3198)".to_string())
+    });
+
+    let galaxy_name = Signal::derive(move || {
+        velocity_text
+            .get()
+            .get("Galaxy")
+            .cloned()
+            .unwrap_or("Galaxy".to_string())
+    });
+
+    // RwSignals for text
+    let sample_values_signal = RwSignal::new(sample_values_name.get());
+    Effect::new(move |_| {
+        sample_values_signal.set(sample_values_name.get());
+    });
+
+    let galaxy_signal = RwSignal::new(galaxy_name.get());
+    Effect::new(move |_| {
+        galaxy_signal.set(galaxy_name.get());
+    });
+
+    // Memo of the final data
     let combined_points = Memo::new(move |_| {
         let defined_points = get_defined_points();
         let velocity_points = get_velocity_points(slider_values, iso_nfw);
@@ -156,13 +191,15 @@ pub fn VelocityChart(
     });
 
     let series = Series::new(|data: &CombinedPoints| data.x)
-        .line(Line::new(|data: &CombinedPoints| data.y2)
-            .with_name("Musterwerte (NGC3198)")
-            .with_interpolation(Step::Horizontal)
+        .line(
+            Line::new(|data: &CombinedPoints| data.y2)
+                .with_name_signal(sample_values_signal)
+                .with_interpolation(Step::Horizontal),
         )
-        .line(Line::new(|data: &CombinedPoints| data.y)
-            .with_name("Galaxie")
-            .with_width(3.0)
+        .line(
+            Line::new(|data: &CombinedPoints| data.y)
+                .with_name_signal(galaxy_signal)
+                .with_width(3.0),
         )
         .with_y_range(0.0, CHART_BOUND)
         .with_x_range(0.0, 45.0);
@@ -171,7 +208,7 @@ pub fn VelocityChart(
         <DefaultChart
             y_label="Geschwindikeit (km/s)".to_string()
             x_label="Radius (kpc)".to_string()
-            series={series}
+            series=series
             data=combined_points
             primary=true
         />

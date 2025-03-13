@@ -37,6 +37,7 @@ fn get_orientation() -> ReadSignal<bool> {
 }
 
 pub fn update_text(language: ReadSignal<String>, set_text: impl Fn(Translation) + 'static) {
+    // Get language and change text signal
     let lang = language.get_untracked().to_string();
     spawn_local(async move {
         let translation = get_translation(lang.as_str()).await;
@@ -58,13 +59,25 @@ pub fn Home() -> impl IntoView {
     let (home_tab_mode, set_home_tab_mode) = signal(true);
 
     // Language settings
+    
+    // Languages available are english and german
     let language_options: [&str; 2] = ["en", "de"];
-    let (language, set_language) = signal(language_options[0].to_string());
-    let (text, set_text) = signal(Translation::new());
 
-    let home_text = Memo::new(move |_| {
-        text.get().0.get("home").cloned().unwrap_or_default()
-    });
+    // Using english as defaul
+    let (language, set_language) = signal(language_options[0].to_string());
+
+    // Set language to german if it is the browsers language
+    if web_sys::window().unwrap().navigator().languages()
+        .iter()
+        .map(|lang| lang.as_string())
+        .collect::<Vec<_>>()
+        .contains(&Some("de".to_string())) {
+        set_language("de".to_string());
+    }
+
+    let (text, set_text) = signal(Translation::new());
+    update_text(language, set_text);
+
     view! {
         <ErrorBoundary fallback=|errors| {
             view! {
@@ -110,12 +123,21 @@ pub fn Home() -> impl IntoView {
                     <Icon icon=i::BiDiscordAlt style="color: white" />
                 </a>
                 <span>
-                    {move || { home_text.get().get("Made by Se").cloned().unwrap_or_default() }}
+                    {move || {
+                        text.get()
+                            .0
+                            .get("home")
+                            .cloned()
+                            .unwrap_or_default()
+                            .get("Made by Se")
+                            .cloned()
+                            .unwrap_or(String::from("Made by Se"))
+                    }}
                 </span>
             </div>
             <h1>"Galaxien Rotation"</h1>
             <Show when=move || { mode.get() == "velocity" }>
-                <VelocityChart slider_values=slider_values iso_nfw=iso_nfw />
+                <VelocityChart slider_values=slider_values iso_nfw=iso_nfw text=text />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
                 <MassChart slider_values=slider_values iso_nfw=iso_nfw />
@@ -133,14 +155,28 @@ pub fn Home() -> impl IntoView {
                                     set_home_tab_mode.set(true);
                                 }>
                                     {move || {
-                                        home_text.get().get("Input").cloned().unwrap_or_default()
+                                        text.get()
+                                            .0
+                                            .get("home")
+                                            .cloned()
+                                            .unwrap_or_default()
+                                            .get("Inputs")
+                                            .cloned()
+                                            .unwrap_or(String::from("Inputs"))
                                     }}
                                 </button>
                                 <button on:click=move |_| {
                                     set_home_tab_mode.set(false);
                                 }>
                                     {move || {
-                                        home_text.get().get("Details").cloned().unwrap_or_default()
+                                        text.get()
+                                            .0
+                                            .get("home")
+                                            .cloned()
+                                            .unwrap_or_default()
+                                            .get("Details")
+                                            .cloned()
+                                            .unwrap_or(String::from("Details"))
                                     }}
                                 </button>
                             </div>
@@ -164,6 +200,7 @@ pub fn Home() -> impl IntoView {
                                         set_slider_values=set_slider_values
                                         iso_nfw=iso_nfw
                                         set_iso_nfw=set_iso_nfw
+                                        text=text
                                     />
                                 </Show>
                             </div>
@@ -178,6 +215,7 @@ pub fn Home() -> impl IntoView {
                     set_slider_values=set_slider_values
                     iso_nfw=iso_nfw
                     set_iso_nfw=set_iso_nfw
+                    text=text
                 />
                 <Misc mode=mode iso_nfw=iso_nfw slider_values=slider_values />
             </Show>
