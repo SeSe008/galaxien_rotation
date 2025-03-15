@@ -2,6 +2,7 @@ use crate::{
     elements::{default_chart::DefaultChart, tex_equation::TexEquation},
     utils::calculate_mass::*,
 };
+use icondata as i;
 use leptos::prelude::*;
 use leptos_chartistry::*;
 use leptos_icons::Icon;
@@ -113,6 +114,10 @@ fn Equations(mode: ReadSignal<String>, iso_nfw: ReadSignal<bool>) -> impl IntoVi
         <div id="equations">
             <Show when=move || { mode.get() == "velocity" }>
                 <TexEquation
+                    label="Gesamte Geschwindigkeit".to_string()
+                    equation=r"v_{total}(r) = \sqrt{{v_{Disk}(r)}^2 + {v_{Halo}(r)}^2}".to_string()
+                />
+                <TexEquation
                     label="Geschwindigkeit der Scheibe".to_string()
                     equation=r"v_{\text{Disk}}\left(r\right)=\sqrt{4\pi\cdot G\cdot\rho_{0_{D}}\cdot a_{D}\cdot{\gamma}^2\cdot\left(I_{0}\left(\gamma\right)K_{0}\left(\gamma\right)-I_{1}\left(\gamma\right)\cdot K_{1}\left(\gamma\right)\right)}"
                         .to_string()
@@ -205,8 +210,8 @@ pub fn Misc(
                     set_tab_selected.set("equations");
                 }>"Formeln"</button>
                 <a
-                    class="tab_selecter"
                     href="https://mabo-physik.de/wp-content/uploads/2024/07/Rotation-von-Spiralgalaxien.pdf"
+                    target="_blank"
                 >
                     "Weitere Erklärung von M. Borchardt"
                     <Icon icon=i::BiLinkExternalRegular style="color: white" />

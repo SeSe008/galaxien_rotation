@@ -162,6 +162,7 @@ pub fn VelocityChart(
             .cloned()
             .unwrap_or("Sample Values (NGC 3198)".to_string())
     });
+    let sample_values_signal = RwSignal::new(sample_values_name.get());
 
     let galaxy_name = Signal::derive(move || {
         velocity_text
@@ -170,15 +171,10 @@ pub fn VelocityChart(
             .cloned()
             .unwrap_or("Galaxy".to_string())
     });
+    let galaxy_signal = RwSignal::new(galaxy_name.get());
 
-    // RwSignals for text
-    let sample_values_signal = RwSignal::new(sample_values_name.get());
     Effect::new(move |_| {
         sample_values_signal.set(sample_values_name.get());
-    });
-
-    let galaxy_signal = RwSignal::new(galaxy_name.get());
-    Effect::new(move |_| {
         galaxy_signal.set(galaxy_name.get());
     });
 
@@ -193,12 +189,12 @@ pub fn VelocityChart(
     let series = Series::new(|data: &CombinedPoints| data.x)
         .line(
             Line::new(|data: &CombinedPoints| data.y2)
-                .with_name_signal(sample_values_signal)
+                .with_name_dyn(sample_values_signal)
                 .with_interpolation(Step::Horizontal),
         )
         .line(
             Line::new(|data: &CombinedPoints| data.y)
-                .with_name_signal(galaxy_signal)
+                .with_name_dyn(galaxy_signal)
                 .with_width(3.0),
         )
         .with_y_range(0.0, CHART_BOUND)
