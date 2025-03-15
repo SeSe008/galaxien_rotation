@@ -95,15 +95,25 @@ fn check_intersection(
     // Compute intersection
     let intersect_x = x_intersection(prev_x, prev_y, x, y, CHART_BOUND);
     let intersection_point: MassPoint = if disk_halo {
+        let halo_val = mass_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor();
         MassPoint::new(
             intersect_x,
             CHART_BOUND,
-            mass_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor()
+            if halo_val < CHART_BOUND {
+                halo_val
+            } else {
+                f64::NAN
+            }
         )
     } else {
+        let disk_val = mass_disk(intersect_x, slider_values.get().0, slider_values.get().1) * disk_factor();
         MassPoint::new(
             intersect_x,
-            mass_disk(intersect_x, slider_values.get().0, slider_values.get().1) * disk_factor(),
+            if disk_val < CHART_BOUND {
+                disk_val
+            } else {
+                f64::NAN
+            },
             CHART_BOUND
         )
     };

@@ -76,17 +76,27 @@ fn check_intersection(
     }
 
     // Compute intersection
-    let intersect_x = x_intersection(next_y, next.x, current.x, y, CHART_BOUND);
+    let intersect_x = x_intersection(current.x, y, next_y, next.x, CHART_BOUND);
     let intersection_point = if disk_halo {
+        let halo_val = density_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get());
         DensityPoint::new(
             intersect_x, 
             CHART_BOUND,
-            density_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get())
+            if halo_val < CHART_BOUND {
+                halo_val
+            } else {
+                f64::NAN
+            }
         )
     } else {
+        let disk_val= density_disk(intersect_x, slider_values.get().0, slider_values.get().1);
         DensityPoint::new(
             intersect_x,
-            density_disk(intersect_x, slider_values.get().0, slider_values.get().1),
+            if disk_val < CHART_BOUND {
+                disk_val
+            } else {
+                f64::NAN
+            },
             CHART_BOUND
         )
     };
