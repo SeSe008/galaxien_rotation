@@ -3,7 +3,7 @@ use leptos_chartistry::*;
 use crate::{
     elements::default_chart::DefaultChart, utils::{
         calculate_density::*,
-        intersection::x_intersection
+        intersection::x_intersection, translation::{create_text_signal, Translation}
     },
 };
 
@@ -107,8 +107,13 @@ fn check_intersection(
 #[component]
 pub fn DensityChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
-    iso_nfw: ReadSignal<bool>
+    iso_nfw: ReadSignal<bool>,
+    text: ReadSignal<Translation>
 ) -> impl IntoView {
+    // Get velocity section of text
+    let density_text: Memo<std::collections::HashMap<String, String>> =
+        Memo::new(move |_| text.get().0.get("density").cloned().unwrap_or_default());
+
     let density_points = Memo::new(move |_| {
         let density_points_no_bound = get_density_points(slider_values, iso_nfw);
         
@@ -135,11 +140,15 @@ pub fn DensityChart(
 
     let series: Series<DensityPoint, f64, f64> = Series::new(|data: &DensityPoint| data.x)
         .line(Line::new(|data: &DensityPoint| data.y1)
-            .with_name("Scheibe")
+            .with_name_dyn(
+                create_text_signal(density_text, "Disk".to_string())
+            )
             .with_width(3.0)
         )
         .line(Line::new(|data: &DensityPoint| data.y2)
-            .with_name("Halo")
+            .with_name_dyn(
+                create_text_signal(density_text, "Halo".to_string())
+            )
             .with_width(3.0)
         )
         .with_y_range(0.0, CHART_BOUND)
@@ -147,11 +156,12 @@ pub fn DensityChart(
 
     view! {
         <DefaultChart
-            y_label="Dichte (10^-21)".to_string()
+            y_label="Density (10^10 * M☉)".to_string()
             x_label="Radius (kpc)".to_string()
             series={series}
             data=density_points
             primary=true
+            label_text=density_text
         />
     }
 

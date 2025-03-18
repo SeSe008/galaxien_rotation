@@ -1,6 +1,6 @@
 use crate::{
     elements::{default_chart::DefaultChart, tex_equation::TexEquation},
-    utils::calculate_mass::*,
+    utils::{calculate_mass::*, translation::{create_text_signal, Translation}},
 };
 use icondata as i;
 use leptos::prelude::*;
@@ -28,8 +28,13 @@ fn disk_factor() -> f64 {
 fn MassBarChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>,
+    text: ReadSignal<Translation>,
 ) -> impl IntoView {
-    const CHART_BOUND: f64 = 100.0;
+    // Get mass-bar section of text
+    let mass_bar_text: Memo<std::collections::HashMap<String, String>> =
+        Memo::new(move |_| text.get().0.get("mass_bar_chart").cloned().unwrap_or_default());
+
+        const CHART_BOUND: f64 = 100.0;
 
     let mass_point: Memo<Vec<MassPoint>> = Memo::new(move |_| {
         vec![MassPoint {
@@ -68,18 +73,23 @@ fn MassBarChart(
     });
 
     let series = Series::new(|data: &MassPoint| data.x)
-        .bar(Bar::new(|data: &MassPoint| data.y_disk).with_name("Scheibe"))
-        .bar(Bar::new(|data: &MassPoint| data.y_halo).with_name("Halo"))
+        .bar(Bar::new(|data: &MassPoint| data.y_disk).with_name_dyn(
+            create_text_signal(mass_bar_text, "Disk".to_string())
+        ))
+        .bar(Bar::new(|data: &MassPoint| data.y_halo).with_name_dyn(
+            create_text_signal(mass_bar_text, "Halo".to_string())
+        ))
         .with_y_range(0.0, CHART_BOUND);
 
     view! {
         <div id="mass_bar_chart">
             <DefaultChart
-                y_label="Masse (10^10 * M☉)".to_string()
+                y_label="Mass (10^10 * M☉)".to_string()
                 x_label="".to_string()
                 series=series
                 data=mass_point
                 primary=false
+                label_text=mass_bar_text
             />
             <div id="mass_bar_chart_values">
                 <span>
@@ -195,6 +205,7 @@ pub fn Misc(
     mode: ReadSignal<String>,
     iso_nfw: ReadSignal<bool>,
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
+    text: ReadSignal<Translation>
 ) -> impl IntoView {
     // Possible values = [mass_details, equations]
     let (tab_selected, set_tab_selected): (ReadSignal<&str>, WriteSignal<&str>) =
@@ -219,7 +230,7 @@ pub fn Misc(
             </div>
             <div class="tab_elements">
                 <Show when=move || { tab_selected.get() == "mass_details" }>
-                    <MassBarChart slider_values=slider_values iso_nfw=iso_nfw />
+                    <MassBarChart slider_values=slider_values iso_nfw=iso_nfw text=text/>
                 </Show>
                 <Show when=move || { tab_selected.get() == "equations" }>
                     <Equations mode=mode iso_nfw=iso_nfw />

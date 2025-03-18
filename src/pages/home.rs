@@ -140,10 +140,10 @@ pub fn Home() -> impl IntoView {
                 <VelocityChart slider_values=slider_values iso_nfw=iso_nfw text=text />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
-                <MassChart slider_values=slider_values iso_nfw=iso_nfw />
+                <MassChart slider_values=slider_values iso_nfw=iso_nfw text=text/>
             </Show>
             <Show when=move || { mode.get() == "density" }>
-                <DensityChart slider_values=slider_values iso_nfw=iso_nfw />
+                <DensityChart slider_values=slider_values iso_nfw=iso_nfw text=text/>
             </Show>
             <Show
                 when=move || orientation.get()
@@ -189,6 +189,7 @@ pub fn Home() -> impl IntoView {
                                                 mode=mode
                                                 iso_nfw=iso_nfw
                                                 slider_values=slider_values
+                                                text=text
                                             />
                                         }
                                     }
@@ -217,7 +218,12 @@ pub fn Home() -> impl IntoView {
                     set_iso_nfw=set_iso_nfw
                     text=text
                 />
-                <Misc mode=mode iso_nfw=iso_nfw slider_values=slider_values />
+                <Misc
+                    mode=mode
+                    iso_nfw=iso_nfw
+                    slider_values=slider_values
+                    text=text
+                />
             </Show>
         </ErrorBoundary>
     }

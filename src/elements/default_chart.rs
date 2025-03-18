@@ -1,13 +1,16 @@
 use leptos::prelude::*;
 use leptos_chartistry::*;
 
+use crate::utils::translation::create_text_signal;
+
 #[component]
 pub fn DefaultChart<T: 'static + Send + Sync>(
     y_label: String,
     x_label: String,
     series: Series<T, f64, f64>,
     data: Memo<Vec<T>>,
-    primary: bool
+    primary: bool,
+    label_text: Memo<std::collections::HashMap<String, String>>,
 ) -> impl IntoView
 {
     let tooltip = Tooltip::new(
@@ -31,12 +34,14 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
                 series=series
                 data=data
                 left=vec![
-                    RotatedLabel::end(y_label).into(),
+                    // Use dynamic labeling
+                    RotatedLabel::new_dyn(Anchor::End, create_text_signal(label_text, y_label)).into(),
                     TickLabels::aligned_floats().into(),
                 ]
                 bottom=vec![
                     TickLabels::aligned_floats().into(),
-                    RotatedLabel::end(x_label).into(),
+                    // Use dynamic labeling
+                    RotatedLabel::new_dyn(Anchor::End, create_text_signal(label_text, x_label)).into(),
                     Legend::middle().into(),
                 ]
                 inner=[

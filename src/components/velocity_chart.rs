@@ -4,7 +4,7 @@ use crate::{
     elements::default_chart::DefaultChart,
     utils::{
         calculate_velocity::calculate_velocity, intersection::x_intersection,
-        translation::Translation,
+        translation::{create_text_signal, Translation},
     },
 };
 use leptos::prelude::*;
@@ -153,31 +153,7 @@ pub fn VelocityChart(
     // Get velocity section of text
     let velocity_text: Memo<std::collections::HashMap<String, String>> =
         Memo::new(move |_| text.get().0.get("velocity").cloned().unwrap_or_default());
-
-    // Derive signals of text
-    let sample_values_name = Signal::derive(move || {
-        velocity_text
-            .get()
-            .get("Sample Values (NGC 3198)")
-            .cloned()
-            .unwrap_or("Sample Values (NGC 3198)".to_string())
-    });
-    let sample_values_signal = RwSignal::new(sample_values_name.get());
-
-    let galaxy_name = Signal::derive(move || {
-        velocity_text
-            .get()
-            .get("Galaxy")
-            .cloned()
-            .unwrap_or("Galaxy".to_string())
-    });
-    let galaxy_signal = RwSignal::new(galaxy_name.get());
-
-    Effect::new(move |_| {
-        sample_values_signal.set(sample_values_name.get());
-        galaxy_signal.set(galaxy_name.get());
-    });
-
+    
     // Memo of the final data
     let combined_points = Memo::new(move |_| {
         let defined_points = get_defined_points();
@@ -185,16 +161,22 @@ pub fn VelocityChart(
 
         combine_points(&velocity_points, &defined_points)
     });
+    
 
+    // Two lines, one for computed, one for pre-defined points
     let series = Series::new(|data: &CombinedPoints| data.x)
         .line(
             Line::new(|data: &CombinedPoints| data.y2)
-                .with_name_dyn(sample_values_signal)
+                .with_name_dyn(
+                    create_text_signal(velocity_text, "Sample Values (NGC 3198)".to_string())
+                )
                 .with_interpolation(Step::Horizontal),
         )
         .line(
             Line::new(|data: &CombinedPoints| data.y)
-                .with_name_dyn(galaxy_signal)
+                .with_name_dyn(
+                    create_text_signal(velocity_text, "Galaxy".to_string())
+                )
                 .with_width(3.0),
         )
         .with_y_range(0.0, CHART_BOUND)
@@ -202,11 +184,12 @@ pub fn VelocityChart(
 
     view! {
         <DefaultChart
-            y_label="Geschwindikeit (km/s)".to_string()
+            y_label="Velocity (km/s)".to_string()
             x_label="Radius (kpc)".to_string()
             series=series
             data=combined_points
             primary=true
+            label_text=velocity_text
         />
     }
 }

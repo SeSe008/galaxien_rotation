@@ -1,5 +1,6 @@
-// Get translation from /text/
+// Get translation from /text/, create signal for translation
 use std::collections::HashMap;
+use leptos::prelude::{Effect, Get, Memo, RwSignal, Set, Signal};
 use serde::{Deserialize, Serialize};
 use reqwasm::http::Request;
 
@@ -26,4 +27,26 @@ pub async fn get_translation(language: &str) -> Translation {
     let parsed: Translation = serde_json::from_str(&text).expect("Failed to parse language");
 
     parsed
+}
+
+pub fn create_text_signal(text: Memo<HashMap<String, String>>, key: String) -> RwSignal<String> {
+    // Create a text signal for translation
+
+    // Get Specific line with key
+    let line: Signal<String> = Signal::derive(move || {
+        text
+            .get()
+            .get(&key)
+            .cloned()
+            .unwrap_or(key.to_string())
+    });
+
+    // Create RWSignal for line
+    let line_rw: RwSignal<String> = RwSignal::new(line.get());
+
+    Effect::new(move |_| {
+        line_rw.set(line.get());
+    });
+
+    line_rw
 }

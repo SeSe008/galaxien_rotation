@@ -1,11 +1,10 @@
 use leptos::prelude::*;
 use leptos_chartistry::*;
 use crate::{
-    utils::{
+    elements::default_chart::DefaultChart, utils::{
         calculate_mass::*,
-        intersection::x_intersection
-    },
-    elements::default_chart::DefaultChart
+        intersection::x_intersection, translation::{create_text_signal, Translation}
+    }
 };
 
 const CHART_BOUND: f64 = 30.0;
@@ -124,8 +123,13 @@ fn check_intersection(
 #[component]
 pub fn MassChart(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
-    iso_nfw: ReadSignal<bool>
+    iso_nfw: ReadSignal<bool>,
+    text: ReadSignal<Translation>
 ) -> impl IntoView {
+    // Get mass section of text
+    let mass_text: Memo<std::collections::HashMap<String, String>> =
+        Memo::new(move |_| text.get().0.get("mass").cloned().unwrap_or_default());
+
     let mass_points = Memo::new(move |_| {
         let mass_points_no_bound = get_mass_points(slider_values, iso_nfw);
         
@@ -150,11 +154,15 @@ pub fn MassChart(
 
     let series = Series::new(|data: &MassPoint| data.x)
         .line(Line::new(|data: &MassPoint| data.y1)
-            .with_name("Scheibe")
+            .with_name_dyn(
+                create_text_signal(mass_text, "Disk".to_string())
+            )
             .with_width(3.0)
         )
         .line(Line::new(|data: &MassPoint| data.y2)
-            .with_name("Halo")
+            .with_name_dyn(
+                create_text_signal(mass_text, "Halo".to_string())
+            )
             .with_width(3.0)
         )
         .with_y_range(0.0, CHART_BOUND)
@@ -162,11 +170,12 @@ pub fn MassChart(
 
     view! {
         <DefaultChart
-            y_label="Masse (10^10 * M☉)".to_string()
+            y_label="Mass (10^10 * M☉)".to_string()
             x_label="Radius (kpc)".to_string()
             series={series}
             data=mass_points
             primary=true
+            label_text=mass_text
         />
     }
 }
