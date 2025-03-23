@@ -277,12 +277,15 @@ body {
 }
 
 #mass_bar_chart {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 95% auto;
   height: 100%;
+  overflow-y: auto;
 
   > .chart {
-    max-height: 90%;
+    height: 100%;
+    padding: 0;
 
     ._chartistry_tooltip {
       display: none;
@@ -543,7 +546,6 @@ body {
   }
 
   #mass_bar_chart_values {
-    padding: .5rem;
     gap: .25rem;
 
     > span {

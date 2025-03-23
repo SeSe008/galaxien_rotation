@@ -25,7 +25,8 @@
         "Disk": "Disk",
         "Halo": "Halo",
         "Mass (10^10 * M☉)": "Mass (10^10 * M☉)",
-        "Radius (kpc)": "Radius (kpc)"
+        "Radius (kpc)": "Radius (kpc)",
+        "Further explanation by M. Borchard": "Further explanation by M. Borchard"
     },
     "density": {
         "Disk": "Disk",
@@ -43,8 +44,10 @@
         "Mass (10^10 * M☉)": "Mass (10^10 * M☉)"
     },
     "equations": {
+        "Combined velocity": "Combined velocity",
         "Velocity of the disk": "Velocity of the disk",
         "Velocity of the halo": "Velocity of the halo",
+        "Gamma": "Gamma",
         "Mass of the disk": "Mass of the disk",
         "Mass of the halo with a density function according to an isothermal gas sphere": "Mass of the halo with a density function according to an isothermal gas sphere",
         "Mass of the halo with a density function according to Navarro, Frenk, and White": "Mass of the halo with a density function according to Navarro, Frenk, and White",

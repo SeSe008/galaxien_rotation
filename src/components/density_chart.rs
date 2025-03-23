@@ -110,9 +110,8 @@ pub fn DensityChart(
     iso_nfw: ReadSignal<bool>,
     text: ReadSignal<Translation>
 ) -> impl IntoView {
-    // Get velocity section of text
-    let density_text: Memo<std::collections::HashMap<String, String>> =
-        Memo::new(move |_| text.get().0.get("density").cloned().unwrap_or_default());
+    // Get density section of text
+    let density_text: Memo<std::collections::HashMap<String, String>> = Memo::new(move |_| text.get().0.get("density").cloned().unwrap_or_default());
 
     let density_points = Memo::new(move |_| {
         let density_points_no_bound = get_density_points(slider_values, iso_nfw);

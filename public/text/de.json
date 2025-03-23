@@ -35,7 +35,8 @@
     },
     "misc": {
         "Details for mass at 30kpc": "Details für Masse bei 30kpc",
-        "Equations": "Formeln"
+        "Equations": "Formeln",
+        "Further explanation by M. Borchard": "Weitere Erklärung von M. Borchardt"
     },
     "mass_bar_chart": {
         "Disk": "Scheibe",
@@ -43,8 +44,10 @@
         "Mass (10^10 * M☉)": "Masse (10^10 * M☉)"
     },
     "equations": {
+        "Combined velocity": "Gesamte Geschwindigkeit",
         "Velocity of the disk": "Geschwindigkeit der Scheibe",
         "Velocity of the halo": "Geschwindigkeit des Halos",
+        "Gamma": "Gamma",
         "Mass of the disk": "Masse der Scheibe",
         "Mass of the halo with a density function according to an isothermal gas sphere": "Masse des Halos bei einer Dichtefunktion nach einer Isothermen Gaskugel",
         "Mass of the halo with a density function according to Navarro, Frenk, and White": "Masse des Halos bei einer Dichtefunktion nach Navarro, Frenk, und White",
