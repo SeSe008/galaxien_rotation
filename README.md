@@ -1,4 +1,5 @@
-# Galaxien-Rotationsgeschwindigkeits Berechner
+# Rotational Velocity of Galaxies
+
 [![Rust](https://img.shields.io/badge/Rust-%23000000.svg?e&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![Leptos](https://img.shields.io/badge/Leptos-EF3939?logo=leptos&logoColor=white)](https://www.leptos.dev/)
 [English](#english) [Deutsch](#deutsch)
