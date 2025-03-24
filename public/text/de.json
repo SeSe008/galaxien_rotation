@@ -10,7 +10,7 @@
         "Density": "Dichte",
         "Initial surface density of the disk": "Anfangsflächendichte der Scheibe",
         "Scale length of the disk": "Skalenlänge der Scheibe",
-        "Initial surface density of the halo": "Anfangsflächendichte des Halos",
+        "Initial density of the halo": "Anfangsflächendichte des Halos",
         "Scale length of the halo": "Skalenlänge des Halos",
         "Density function according to an isothermal gas sphere": "Dichtefunktion nach einer Isothermen Gaskugel",
         "Density function according to Navarro, Frenk, and White": "Dichtefunktion nach Navarro, Frenk, und White"
