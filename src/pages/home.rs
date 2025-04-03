@@ -78,6 +78,20 @@ pub fn Home() -> impl IntoView {
     let (text, set_text) = signal(Translation::new());
     update_text(language, set_text);
 
+    // Set the page title
+    Effect::new(move || {
+        document().set_title(
+            &text.get()
+                .0
+                .get("home")
+                .cloned()
+                .unwrap_or_default()
+                .get("Galaxy Rotation")
+                .cloned()
+                .unwrap_or(String::from("Galaxy Rotation"))
+        );
+    });    
+
     view! {
         <ErrorBoundary fallback=|errors| {
             view! {
@@ -135,15 +149,26 @@ pub fn Home() -> impl IntoView {
                     }}
                 </span>
             </div>
-            <h1>"Galaxien Rotation"</h1>
+            <h1>
+                {move || {
+                    text.get()
+                        .0
+                        .get("home")
+                        .cloned()
+                        .unwrap_or_default()
+                        .get("Galaxy Rotation")
+                        .cloned()
+                        .unwrap_or(String::from("Galaxy Rotation"))
+                }}
+            </h1>
             <Show when=move || { mode.get() == "velocity" }>
                 <VelocityChart slider_values=slider_values iso_nfw=iso_nfw text=text />
             </Show>
             <Show when=move || { mode.get() == "mass" }>
-                <MassChart slider_values=slider_values iso_nfw=iso_nfw text=text/>
+                <MassChart slider_values=slider_values iso_nfw=iso_nfw text=text />
             </Show>
             <Show when=move || { mode.get() == "density" }>
-                <DensityChart slider_values=slider_values iso_nfw=iso_nfw text=text/>
+                <DensityChart slider_values=slider_values iso_nfw=iso_nfw text=text />
             </Show>
             <Show
                 when=move || orientation.get()
@@ -218,12 +243,7 @@ pub fn Home() -> impl IntoView {
                     set_iso_nfw=set_iso_nfw
                     text=text
                 />
-                <Misc
-                    mode=mode
-                    iso_nfw=iso_nfw
-                    slider_values=slider_values
-                    text=text
-                />
+                <Misc mode=mode iso_nfw=iso_nfw slider_values=slider_values text=text />
             </Show>
         </ErrorBoundary>
     }
