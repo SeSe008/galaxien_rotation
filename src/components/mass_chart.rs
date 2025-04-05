@@ -27,7 +27,7 @@ impl MassPoint {
 }
 
 fn halo_factor() -> f64 {
-    1.5 * 10.0_f64.powi(18)
+    (3.09 * 10.0_f64.powi(18)) / 2.0
 }
 
 fn disk_factor() -> f64 {

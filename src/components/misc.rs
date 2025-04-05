@@ -20,7 +20,7 @@ struct MassPoint {
 }
 
 fn halo_factor() -> f64 {
-    1.5 * 10.0_f64.powi(18)
+    (3.09 * 10.0_f64.powi(18)) / 2.0
 }
 
 fn disk_factor() -> f64 {
@@ -174,7 +174,7 @@ fn Equations(
             </Show>
             <Show when=move || { mode.get() == "mass" }>
                 <TexEquation
-                    label="Mass of the disk".to_string()
+                    label="Mass of the disk, where d (width) = 0.5".to_string()
                     text=eq_text
                     equation=r"M_{\text{Disk}}\left(r\right)=2\pi\cdot\rho_{0_{D}}\cdot d\cdot a_D\cdot\left(a_D-\left(r+a_D\right)\cdot e^{-\frac{r}{a_D}}\right)"
                         .to_string()

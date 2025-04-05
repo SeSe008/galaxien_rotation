@@ -49,7 +49,7 @@
         "Velocity of the disk": "Velocity of the disk",
         "Velocity of the halo": "Velocity of the halo",
         "Gamma": "Gamma",
-        "Mass of the disk": "Mass of the disk",
+        "Mass of the disk, where d (width) = 0.5": "Mass of the disk, where d (width) = 0.5",
         "Mass of the halo with a density function according to an isothermal gas sphere": "Mass of the halo with a density function according to an isothermal gas sphere",
         "Mass of the halo with a density function according to Navarro, Frenk, and White": "Mass of the halo with a density function according to Navarro, Frenk, and White",
         "Density of the disk": "Density of the disk",

@@ -49,7 +49,7 @@
         "Velocity of the disk": "Geschwindigkeit der Scheibe",
         "Velocity of the halo": "Geschwindigkeit des Halos",
         "Gamma": "Gamma",
-        "Mass of the disk": "Masse der Scheibe",
+        "Mass of the disk, where d (width) = 0.5": "Masse der Scheibe, wobei d (dicke) = 0.5",
         "Mass of the halo with a density function according to an isothermal gas sphere": "Masse des Halos bei einer Dichtefunktion nach einer Isothermen Gaskugel",
         "Mass of the halo with a density function according to Navarro, Frenk, and White": "Masse des Halos bei einer Dichtefunktion nach Navarro, Frenk, und White",
         "Density of the disk": "Dichte der Scheibe",
