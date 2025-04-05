@@ -1,4 +1,7 @@
-// Modified bessel functions for first and second king, when x = 0 or 1. Polynomial values copied from https://github.com/SheetJS/bessel 
+/*
+Modified bessel functions for first and second king, when x = 0 or 1.
+Credits for calculations and polynomial values to https://github.com/SheetJS/bessel 
+*/
 
 fn horner(arr: &[f64], x: f64) -> f64 {
     let mut res = 0.0;
@@ -8,6 +11,7 @@ fn horner(arr: &[f64], x: f64) -> f64 {
     res
 }
 
+// Bessel_K of the first and second kind
 pub fn besselk(x: f64, n: i8) -> f64 {
     fn bessel0(x: f64) -> f64 {
         let b0_a = [0.74e-5, 0.10750e-3, 0.262698e-2, 0.3488590e-1, 0.23069756, 0.42278420, -0.57721566];
@@ -41,6 +45,7 @@ pub fn besselk(x: f64, n: i8) -> f64 {
     }
 }
 
+// Bessel_I of the first and second kind
 pub fn besseli(x: f64, n: i8) -> f64 {
     fn bessel0(x: f64) -> f64 {
         let b0_a = [0.45813e-2, 0.360768e-1, 0.2659732, 1.2067492, 3.0899424, 3.5156229, 1.0];

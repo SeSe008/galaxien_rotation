@@ -17,9 +17,10 @@ pub fn TexEquation(
     equation: String,
     text: Memo<HashMap<String, String>>
 ) -> impl IntoView {
+    // NodeRef for equation content
     let node_ref = NodeRef::<Div>::new();
 
-
+    // Render equation with katex
     Effect::new(move || {
         if let Some(div) = node_ref.get() {
             let eq_string = equation.clone();

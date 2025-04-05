@@ -7,6 +7,7 @@ use crate::{
     }
 };
 
+// Vertical limit of chart
 const CHART_BOUND: f64 = 30.0;
 
 #[derive(PartialEq, Copy, Clone, Debug)]
@@ -26,6 +27,7 @@ impl MassPoint {
     }
 }
 
+// Convert units
 fn halo_factor() -> f64 {
     (3.09 * 10.0_f64.powi(18)) / 2.0
 }
@@ -38,9 +40,11 @@ fn get_mass_points(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>
 ) -> Vec<MassPoint> {
+    // Retrieve Properties from signal
     let properties = slider_values.get();
     let iso_nfw_resolved = iso_nfw.get();
 
+    // Compute points
     let mut mass_points: Vec<MassPoint> = Vec::new();
 
     for i in (0..182).map(|x| x as f64 * 0.25) {
@@ -54,6 +58,7 @@ fn get_mass_points(
     mass_points
 }
 
+// Check for an intersection at CHART_BOUND; If exists: compute point of intersection.
 fn check_intersection(
     i: usize,
     mass_points_no_bound: &Vec<MassPoint>,
@@ -67,32 +72,19 @@ fn check_intersection(
         return;
     }
 
-    let x = mass_points_no_bound[i].x;
-    let y: f64 = if disk_halo {
-        mass_points_no_bound[i].y1
-    } else {
-        mass_points_no_bound[i].y2
-    };
+    // Retrieve values
+    let current = mass_points_no_bound[i];
+    let prev = mass_points_no_bound[i - 1];
+    let (x2, y2) = (current.x, if disk_halo { current.y1 } else { current.y2 });
+    let (x1, y1) = (prev.x, if disk_halo { prev.y1 } else { prev.y2 });
 
-    // No intersection if y is <= CHART_BOUND
-    if y <= CHART_BOUND {
+    // No intersection if y1 <= CHART_BOUND or y2 >= CHART_BOUND
+    if y2 <= CHART_BOUND || y1 >= CHART_BOUND {
         return;
     }
 
-    let prev_x: f64 = mass_points[i - 1].x;
-    let prev_y: f64 = if disk_halo {
-        mass_points_no_bound[i - 1].y1
-    } else {
-        mass_points_no_bound[i - 1].y2
-    };
-
-    // No intersection if next_y is >= CHART_BOUND
-    if prev_y >= CHART_BOUND {
-        return;
-    }
-
-    // Compute intersection
-    let intersect_x = x_intersection(prev_x, prev_y, x, y, CHART_BOUND);
+    // Compute intersection and add Point
+    let intersect_x = x_intersection(x1, y1, x2, y2, CHART_BOUND);
     let intersection_point: MassPoint = if disk_halo {
         let halo_val = mass_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get()) * halo_factor();
         MassPoint::new(
@@ -137,15 +129,17 @@ pub fn MassChart(
 
         for (i, mass) in mass_points_no_bound.iter().enumerate() {
             let mut mass = *mass;
-            // Check if fits into boundary
+            // Check if fits into CHART_BOUND, otherwise use NaN
             if mass.y1 > CHART_BOUND {
                 check_intersection(i, &mass_points_no_bound, &mut mass_points, true, slider_values, iso_nfw);
                 mass.y1 = f64::NAN;
             }
+
             if mass.y2 > CHART_BOUND {
                 check_intersection(i, &mass_points_no_bound, &mut mass_points, false, slider_values, iso_nfw);
                 mass.y2 = f64::NAN;
             }
+
             mass_points.push(mass);
         }
 

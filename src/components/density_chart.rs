@@ -7,6 +7,7 @@ use crate::{
     },
 };
 
+// Vertical limit of chart
 const CHART_BOUND: f64 = 4.0;
 
 #[derive(PartialEq, Clone, Copy, Debug)]
@@ -30,11 +31,13 @@ fn get_density_points(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>
 ) -> Vec<DensityPoint> {
+    // Retrieve Properties from signal
     let properties = slider_values.get();
     let iso_nfw_resolved = iso_nfw.get();
 
     let mut density_points: Vec<DensityPoint> = Vec::new();
 
+    // Compute points
     for x in (0..182).map(|x| x as f64 * 0.25) {
         let y1: f64 = density_disk(x, properties.0, properties.1);
         let y2: f64 = density_halo(x, properties.2, properties.3, iso_nfw_resolved);
@@ -45,6 +48,7 @@ fn get_density_points(
     density_points
 }
 
+// Check for an intersection at CHART_BOUND; If exists: compute point of intersection.
 fn check_intersection(
     i: usize,
     original_points: &[DensityPoint],
@@ -58,25 +62,24 @@ fn check_intersection(
         return;
     }
 
-    let current = &original_points[i];
-    let next = &original_points[i + 1];
-
-    let y = if disk_halo { current.y1 } else { current.y2 };
+    // Retrieve values
+    let current = original_points[i];
+    let next = original_points[i + 1];
+    let (x1, y1) = (current.x, if disk_halo { current.y1 } else { current.y2 });
+    let (x2, y2) = (next.x, if disk_halo { next.y1 } else { next.y2 });
 
     // No intersection if y is <= CHART_BOUND
-    if y <= CHART_BOUND {
+    if y1 <= CHART_BOUND {
         return;
     }
-
-    let next_y = if disk_halo { next.y1 } else { next.y2 };
 
     // No intersection if next_y is >= CHART_BOUND
-    if next_y >= CHART_BOUND {
+    if y2 >= CHART_BOUND {
         return;
     }
 
-    // Compute intersection
-    let intersect_x = x_intersection(current.x, y, next_y, next.x, CHART_BOUND);
+    // Compute intersection and add Point
+    let intersect_x = x_intersection(x1, y1, x2, y2, CHART_BOUND);
     let intersection_point = if disk_halo {
         let halo_val = density_halo(intersect_x, slider_values.get().2, slider_values.get().3, iso_nfw.get());
         DensityPoint::new(
@@ -118,7 +121,7 @@ pub fn DensityChart(
         
         let mut processed = Vec::new();
         for (i, mut density) in density_points_no_bound.iter().copied().enumerate() {
-            // Check if fits into bound
+            // Check if fits into CHART_BOUND, otherwise use NaN
             if density.y1 > CHART_BOUND {
                 density.y1 = f64::NAN;
             }

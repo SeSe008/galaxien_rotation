@@ -11,6 +11,9 @@ use leptos_chartistry::*;
 use leptos_icons::Icon;
 use std::vec;
 
+// Vertical limit of chart
+const CHART_BOUND: f64 = 100.0;
+
 #[derive(PartialEq, Clone)]
 struct MassPoint {
     x: f64,
@@ -19,6 +22,7 @@ struct MassPoint {
     y_halo: f64,
 }
 
+// Convert units
 fn halo_factor() -> f64 {
     (3.09 * 10.0_f64.powi(18)) / 2.0
 }
@@ -41,8 +45,6 @@ fn MassBarChart(
             .cloned()
             .unwrap_or_default()
     });
-
-    const CHART_BOUND: f64 = 100.0;
 
     let mass_point: Memo<Vec<MassPoint>> = Memo::new(move |_| {
         vec![MassPoint {

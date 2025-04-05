@@ -1,6 +1,6 @@
 // Get translation from /text/, create signal for translation
 use std::collections::HashMap;
-use leptos::prelude::{Effect, Get, Memo, RwSignal, Set, Signal};
+use leptos::prelude::{Effect, Get, GetUntracked, Memo, RwSignal, Set, Signal};
 use serde::{Deserialize, Serialize};
 use reqwasm::http::Request;
 
@@ -33,16 +33,16 @@ pub fn create_text_signal(text: Memo<HashMap<String, String>>, key: String) -> R
     // Create a text signal for translation
 
     // Get Specific line with key
-    let line: Signal<String> = Signal::derive(move || {
-        text
+    let line: Signal<String> = Signal::derive(
+        move || text
             .get()
             .get(&key)
             .cloned()
             .unwrap_or(key.to_string())
-    });
+        );
 
     // Create RWSignal for line
-    let line_rw: RwSignal<String> = RwSignal::new(line.get());
+    let line_rw: RwSignal<String> = RwSignal::new(line.get_untracked());
 
     Effect::new(move |_| {
         line_rw.set(line.get());

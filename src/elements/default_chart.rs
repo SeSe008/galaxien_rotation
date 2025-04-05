@@ -11,8 +11,8 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
     data: Memo<Vec<T>>,
     primary: bool,
     label_text: Memo<std::collections::HashMap<String, String>>,
-) -> impl IntoView
-{
+) -> impl IntoView {
+    // Chart tooltip
     let tooltip = Tooltip::new(
         TooltipPlacement::RightCursor,
         TickLabels::aligned_floats().with_format(|value, _| format!("{:.1}", value)),

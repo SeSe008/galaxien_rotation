@@ -10,6 +10,7 @@ use crate::{
 use leptos::prelude::*;
 use leptos_chartistry::*;
 
+// Vertical limit of chart
 const CHART_BOUND: f64 = 300.0;
 
 #[derive(PartialEq)]
@@ -68,12 +69,13 @@ fn get_velocity_points(
     slider_values: ReadSignal<(f64, f64, f64, f64)>,
     iso_nfw: ReadSignal<bool>,
 ) -> Vec<VelocityPoint> {
-    let mut velocity_points = Vec::new();
-
-    //Get properties for performance
+    // Retrieve properties from signal
     let properties = slider_values.get();
     let iso_nfw_resolved = iso_nfw.get();
 
+    let mut velocity_points = Vec::new();
+
+    // Compute points
     for i in (0..182).map(|x| x as f64 * 0.25) {
         let x: f64 = i as f64;
         let y = calculate_velocity(
@@ -90,6 +92,7 @@ fn get_velocity_points(
     velocity_points
 }
 
+// Check for an intersection at CHART_BOUND; If exists: compute point of intersection.
 fn check_intersection(
     i: usize,
     velocity_points: &[VelocityPoint],
@@ -115,6 +118,7 @@ fn check_intersection(
     }
 }
 
+// Combines defined and calculated points
 fn combine_points(
     velocity_points: &[VelocityPoint],
     defined_points: &[VelocityPoint],
@@ -124,20 +128,23 @@ fn combine_points(
     for (i, velocity) in velocity_points.iter().enumerate() {
         check_intersection(i, velocity_points, defined_points, velocity, &mut combined);
 
-        // If the current y is above the CHART_BOUND, use NaN.
+        // Check if fits into CHART_BOUND, otherwise use NaN
         let velocity_y = if velocity.y > CHART_BOUND {
             f64::NAN
         } else {
             velocity.y
         };
 
+        // Get defined point if exists, otherwise use NaN
         let defined_y = defined_points.get(i / 2).map_or(f64::NAN, |dp| dp.y);
 
+        // Combine and push point
         let current_point = CombinedPoints {
             x: velocity.x,
             y: velocity_y,
             y2: defined_y,
         };
+
         combined.push(current_point);
     }
 
