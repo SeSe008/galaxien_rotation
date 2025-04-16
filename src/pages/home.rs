@@ -245,6 +245,7 @@ pub fn Home() -> impl IntoView {
                 />
                 <Misc mode=mode iso_nfw=iso_nfw slider_values=slider_values text=text />
             </Show>
+	    <div id="privacy">This "is a static website that does not collect nor store any data."</div>
         </ErrorBoundary>
     }
 }

@@ -4,7 +4,7 @@ $color3: #663167;
 $color4: #4B3167;
 
 body {
-  position: absolute  ;
+  position: absolute;
   font-family: sans-serif;
   text-align: center;
   background-color: $color1;
@@ -281,7 +281,8 @@ body {
   grid-template-columns: 1fr;
   grid-template-rows: 95% auto;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: visible;
+  padding: .75rem;
 
   > .chart {
     height: 100%;
@@ -310,7 +311,7 @@ body {
 @media screen and (orientation: landscape) and (min-width: 1024px) {
   body {
     grid-template-columns: 40% 60%;
-    grid-template-rows: min-content auto 1fr;
+    grid-template-rows: min-content auto 1fr min-content;
     
     > * {
       box-sizing: border-box;
@@ -441,7 +442,7 @@ body {
 
   .tab_elements {
     height: 100%;
-    padding: 1rem;
+    padding: 0 0 0 1rem;
   }
 
   #mass_bar_chart_values {
@@ -457,7 +458,7 @@ body {
 @media screen and (orientation: portrait), screen and (max-width: 1024px) {
   body {
     grid-template-columns: 1fr;
-    grid-template-rows: min-content 1fr 1fr;
+    grid-template-rows: min-content 1fr 1fr min-content;
     overflow-x: hidden;
   }
 
@@ -553,3 +554,10 @@ body {
     }
   }
 }
+
+#privacy {
+  padding: .125rem;
+  font-size: .5rem;
+  text-align: left;
+}
+

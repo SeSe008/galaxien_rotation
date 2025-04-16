@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use leptos_chartistry::*;
 
+use leptos_chartistry::*;
 use crate::utils::translation::create_text_signal;
 
 #[component]
@@ -12,6 +12,7 @@ pub fn DefaultChart<T: 'static + Send + Sync>(
     primary: bool,
     label_text: Memo<std::collections::HashMap<String, String>>,
 ) -> impl IntoView {
+    log::info!("test");
     // Chart tooltip
     let tooltip = Tooltip::new(
         TooltipPlacement::RightCursor,
